@@ -20,4 +20,5 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/IBLTest_Latency.unity
     guid: 97e48f0112ac6c141a472c093b6d7ce1
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: b1ce982fa66f4fc4e9062edae987813c, type: 2}
