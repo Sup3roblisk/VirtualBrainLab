@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &13879450
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 13879451}
+  m_Layer: 6
+  m_Name: BrainAreas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &13879451
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13879450}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: 0.7071068, w: 0}
+  m_LocalPosition: {x: 5.7, y: 4, z: -6.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1690469968}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &114203399
 GameObject:
   m_ObjectHideFlags: 0
@@ -5067,7 +5097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 426654, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 426654, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
       propertyPath: m_LocalScale.x
@@ -29729,6 +29759,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -29802,7 +29833,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 46.448, y: -36.971, z: 0}
 --- !u!1 &1183470602
 GameObject:
@@ -29895,7 +29926,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &1234815973
 GameObject:
@@ -34857,6 +34888,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -39965,8 +39997,19 @@ MonoBehaviour:
   ontologyContentPanel: {fileID: 0}
   ontologyTogglePrefab: {fileID: 0}
   heightPerToggle: 20
+  loadBerylDepth: 0
   overrideNetwork: 1
-  brainRegionShader: {fileID: -6465566751694194690, guid: 4ce38b5820ab35046b8d604c02ad59c5, type: 3}
+  brainRegionMaterials:
+  - {fileID: 2100000, guid: b8a04b95bf5e0fe4dbdfd3978413393d, type: 2}
+  brainRegionMaterialNames:
+  - default
+  modelScale: 1
+  addressableAssetPath: Assets/AddressableAssets/AllenCCF/
+  ontologyStructureAsset:
+    m_AssetGUID: 523f4b2aa92687c4ca463a70e7e8fdd2
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!4 &1595768703
 Transform:
   m_ObjectHideFlags: 0
@@ -39979,7 +40022,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1595768704
 MonoBehaviour:
@@ -40137,6 +40180,7 @@ Transform:
   - {fileID: 1861690899}
   - {fileID: 1010559012}
   - {fileID: 1904155187}
+  - {fileID: 13879451}
   m_Father: {fileID: 1495091484}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -54822,20 +54866,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d43419cf1d43bf4995059dad0606dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brainCamera: {fileID: 1391755444}
-  brainCameraRotator: {fileID: 1861690898}
-  brain: {fileID: 1690469967}
-  tpmanager: {fileID: 0}
-  minFoV: 2
-  maxFoV: 120
-  fovDelta: 15
-  orthoDelta: 5
-  moveSpeed: 25
-  rotSpeed: 250
-  minXRotation: -150
-  maxXRotation: 150
-  minZRotation: -150
-  maxZRotation: 150
 --- !u!1001 &1904155186
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59888,7 +59918,7 @@ Transform:
   m_LocalScale: {x: 0.10000001, y: 0.10000001, z: 0.100000024}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2142958482
 BoxCollider:
