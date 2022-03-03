@@ -56,7 +56,7 @@ public class IBLEventAverageSystem : SystemBase
                 {
                     spikeComp.spiking = 1f;
                     color.Value = white;
-                    scale.Value = 1f;
+                    scale.Value = 0.06f;
                 }
             }).ScheduleParallel();
     }

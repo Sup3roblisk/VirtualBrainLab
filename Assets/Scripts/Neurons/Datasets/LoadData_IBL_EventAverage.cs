@@ -26,14 +26,16 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
         Dictionary<string, IBLEventAverageComponent> eventAverageData = new Dictionary<string, IBLEventAverageComponent>();
 
         // load the UUID information for the event average data
-        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/ibl/uuid_avgs_info");
+        // List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/ibl/uuid_avgs_info");
         // ibl/large_files/baseline-normalized_1d_clu_avgs
         // ibl/large_files/max-normalized_1d_clu_avgs
-        float[] spikeRates = util.LoadBinaryFloatHelper("large_files/baseline-normalized_1d_clu_avgs");
+        float[] spikeRates = util.LoadBinaryFloatHelper("ibl/large_files/baseline_1d_clu_avgs");
 
-        for (var ui = 0; ui < data.Count; ui++)
+        List<IBLEventAverageComponent> eventAverageComponents = new List<IBLEventAverageComponent>();
+
+        for (var ui = 0; ui < (spikeRates.Length / 1000); ui++)
         {
-            string uuid = (string)data[ui]["uuid"];
+            //string uuid = (string)data[ui]["uuid"];
             FixedListFloat4096 spikeRate = new FixedListFloat4096();
 
             for (int i = 0; i < (SCALED_LEN*conditions); i++)
@@ -43,8 +45,10 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
 
             IBLEventAverageComponent eventAverageComponent = new IBLEventAverageComponent();
             eventAverageComponent.spikeRate = spikeRate;
-            eventAverageData.Add(uuid, eventAverageComponent);
+            eventAverageComponents.Add(eventAverageComponent);
+            //eventAverageData.Add(uuid, eventAverageComponent);
         }
+
 
         // load the UUID and MLAPDV data
         Dictionary<string, float3> mlapdvData = util.LoadIBLmlapdv();
@@ -54,9 +58,13 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
 
         // Figure out which neurons we have both a mlapdv data and an event average dataset
         List<float3> iblPos = new List<float3>();
-        List<IBLEventAverageComponent> eventAverageComponents = new List<IBLEventAverageComponent>();
 
-        foreach (string uuid in eventAverageData.Keys)
+        foreach (float3 mladpv in mlapdvData.Values)
+        {
+            iblPos.Add(mladpv);
+        }
+
+        /*foreach (string uuid in eventAverageData.Keys)
         {
             if (mlapdvData.ContainsKey(uuid))
             {
@@ -64,7 +72,7 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
                 iblPos.Add(mlapdvData[uuid]);
                 eventAverageComponents.Add(eventAverageData[uuid]);
             }
-        }
+        }*/
 
         Debug.Log("Num neurons: " + eventAverageComponents.Count);
         nemanager.AddNeurons(iblPos, eventAverageComponents);

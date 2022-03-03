@@ -160,7 +160,7 @@ public class VisualStimulusManager : MonoBehaviour
 
     public bool SetStimPositionDegrees(GameObject stimulusObject, Vector2 degreePos)
     {
-        Debug.Log(degreePos);
+        //Debug.Log(degreePos);
 
         // TODO: Warning -- degree position is ignoring y!
         //Quaternion angle = Quaternion.Euler(new Vector3(degreePos.x, degreePos.y));
