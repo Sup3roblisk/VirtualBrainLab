@@ -119,7 +119,7 @@ public class IBLReplayTask : Experiment
         uiDropdown.onValueChanged.AddListener(delegate { LoadDropdownEID(); });
 
         // Load CCF coordinates
-        mlapdv = CSVReader.Read("Datasets/ibl/ccf_mlapdv");
+        mlapdv = CSVReader.ReadFromResources("Datasets/ibl/ccf_mlapdv");
 
         _uiPanel.SetActive(false);
 
@@ -167,7 +167,7 @@ public class IBLReplayTask : Experiment
         }
 
         // Load the probe trajectory CSV
-        trajectories = CSVReader.Read("Datasets/ibl/probe_trajectories");
+        trajectories = CSVReader.ReadFromResources("Datasets/ibl/probe_trajectories");
 
         ParseTrajectoryInfo();
     }

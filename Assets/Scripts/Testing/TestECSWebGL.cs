@@ -26,7 +26,7 @@ public class TestECSWebGL : MonoBehaviour
     private void ParseSteinmetzData()
     {
         // Load and create gameObjects for all of the data in Nick's dataset
-        List<Dictionary<string, object>> data = CSVReader.Read("Datasets/nick_neuron_positions");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/nick_neuron_positions");
         positions = new List<float3>();
 
         for (var i = 0; i < data.Count; i++)

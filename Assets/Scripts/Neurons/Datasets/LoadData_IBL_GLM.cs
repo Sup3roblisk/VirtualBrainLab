@@ -24,7 +24,7 @@ public class LoadIBLData_IBL_GLM : MonoBehaviour
         iblData = new List<IBLGLMComponent>();
 
         float scale = 1000;
-        List<Dictionary<string, object>> mlapdv = CSVReader.Read("Datasets/ibl/ccf_mlapdv");
+        List<Dictionary<string, object>> mlapdv = CSVReader.ReadFromResources("Datasets/ibl/ccf_mlapdv");
 
         for (int i = 0; i < mlapdv.Count - 1; i++)
         {
@@ -34,7 +34,7 @@ public class LoadIBLData_IBL_GLM : MonoBehaviour
             iblPos.Add(new float3(ml, ap, dv));
         }
 
-        List<Dictionary<string, object>> data = CSVReader.Read("Datasets/ibl/uuid_data");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/ibl/uuid_data");
 
         for (int i = 0; i < data.Count; i++)
         {

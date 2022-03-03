@@ -36,11 +36,11 @@ public class TestAnnotationDataset : MonoBehaviour
         ushort[] annData = util.LoadBinaryUShortHelper(annotationIndexFile);
         uint[] annMap = util.LoadBinaryUInt32Helper(annotationIndexFile + "_map");
         Debug.Log("Creating the CCF AnnotationDataset object");
-        annotationDataset = new AnnotationDataset("annotation", annData, annMap, ccfIndexMap);
+        annotationDataset = new AnnotationDataset(annData, annMap, ccfIndexMap);
 
         colors = new Dictionary<int, Color>();
 
-        List<Dictionary<string, object>> data = CSVReader.Read("AllenCCF/ontology_structure_minimal");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("AllenCCF/ontology_structure_minimal");
 
         for (var i = 0; i < data.Count; i++)
         {

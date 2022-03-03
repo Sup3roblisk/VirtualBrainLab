@@ -29,7 +29,7 @@ public class IBLSyncTest : MonoBehaviour
     {
         frame60hz = 1;
 
-        List<Dictionary<string, object>> data = CSVReader.Read("IBLSyncTest/points_3d");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("IBLSyncTest/points_3d");
 
         timePoints = data.Count;
         pawL = new float[data.Count, 3];

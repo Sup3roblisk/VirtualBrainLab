@@ -38,7 +38,7 @@ public class LoadData_IBL_ProbeByLab : MonoBehaviour
         List<float3> mlapdv = new List<float3>();
 
         // load the lab information
-        List<Dictionary<string, object>> data_metadata = CSVReader.Read("Datasets/ibl/metadata");
+        List<Dictionary<string, object>> data_metadata = CSVReader.ReadFromResources("Datasets/ibl/metadata");
         Dictionary<string, int> lab2int = new Dictionary<string, int>();
         int labCount = 0;
         Dictionary<string, int> metadata = new Dictionary<string, int>();

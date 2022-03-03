@@ -26,7 +26,7 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
         Dictionary<string, IBLEventAverageComponent> eventAverageData = new Dictionary<string, IBLEventAverageComponent>();
 
         // load the UUID information for the event average data
-        List<Dictionary<string, object>> data = CSVReader.Read("Datasets/ibl/uuid_avgs_info");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/ibl/uuid_avgs_info");
         // ibl/large_files/baseline-normalized_1d_clu_avgs
         // ibl/large_files/max-normalized_1d_clu_avgs
         float[] spikeRates = util.LoadBinaryFloatHelper("large_files/baseline-normalized_1d_clu_avgs");

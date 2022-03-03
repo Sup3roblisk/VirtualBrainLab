@@ -20,7 +20,7 @@ public class LoadData_Steinmetz2019 : MonoBehaviour
     private void ParseSteinmetzData()
     {
         // Load and create gameObjects for all of the data in Nick's dataset
-        List<Dictionary<string, object>> data = CSVReader.Read("Datasets/nick_neuron_positions");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/nick_neuron_positions");
         positions = new List<float3>();
 
         for (var i = 0; i < data.Count; i++)
@@ -37,7 +37,7 @@ public class LoadData_Steinmetz2019 : MonoBehaviour
     private void ParseIBLData()
     {
         // Load and create gameObjects for all of the data in Nick's dataset
-        List<Dictionary<string, object>> data = CSVReader.Read("Datasets/IBL_neuron_positions");
+        List<Dictionary<string, object>> data = CSVReader.ReadFromResources("Datasets/IBL_neuron_positions");
         positions = new List<float3>();
 
         for (var i = 0; i < data.Count; i++)
