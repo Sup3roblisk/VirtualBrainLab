@@ -30,11 +30,11 @@ public class IBLTask : Experiment
     private float[] stimPositionTriggers = { 0, 45 };
 
     // LOCAL TASK PARAMETER
-    // 37 52 62 99 (250 total)
+    // 37 51 62 100 (250 total)
     private int stimOnIdx = 37 - 1;
-    private int firstWheelIdx = (37 + 52) - 1;
-    private int feedbackIdx = (37 + 52 + 62) - 1;
-    private int endIdx = (37 + 52 + 62 + 99) - 1;
+    private int firstWheelIdx = (37 + 51) - 1;
+    private int feedbackIdx = (37 + 51 + 62) - 1;
+    private int endIdx = (37 + 51 + 62 + 100) - 1;
 
     // INTERNAL TRACKING
     // 0=qui 1=stim on 2=wheel moving 3=reward 4=ITI
