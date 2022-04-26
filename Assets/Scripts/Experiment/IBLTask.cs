@@ -219,8 +219,6 @@ public class IBLTask : Experiment
                         }
                         break;
                 }
-                Debug.Log(trialTimeIndex);
-
             }
         }
     }
