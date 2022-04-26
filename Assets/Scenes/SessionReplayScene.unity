@@ -1422,9 +1422,9 @@ RectTransform:
   m_Father: {fileID: 1596222716}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 57.5, y: -57.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 115, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &11328477
@@ -1928,6 +1928,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -7482,7 +7483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &497469905
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7803,6 +7804,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -9635,6 +9637,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -9881,6 +9884,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -10444,6 +10448,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -12704,6 +12709,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -13445,6 +13451,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -14297,8 +14304,6 @@ GameObject:
   - component: {fileID: 1036566693}
   - component: {fileID: 1036566697}
   - component: {fileID: 1036566700}
-  - component: {fileID: 1036566699}
-  - component: {fileID: 1036566698}
   m_Layer: 0
   m_Name: main
   m_TagString: Untagged
@@ -14321,7 +14326,19 @@ MonoBehaviour:
   ontologyContentPanel: {fileID: 887676458}
   ontologyTogglePrefab: {fileID: 2260287975246251277, guid: 4a7d2f2444858a74e92aa6fb1a5642b1, type: 3}
   heightPerToggle: 20
+  loadBerylDepth: 0
   overrideNetwork: 0
+  brainRegionMaterials:
+  - {fileID: 2100000, guid: 4fdce846a282bef42af0221c4d4da68d, type: 2}
+  brainRegionMaterialNames:
+  - default
+  modelScale: 0
+  addressableAssetPath: 
+  ontologyStructureAsset:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!222 &1036566687
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14594,33 +14611,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13968967245d3674eb77f631223a57f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1036566698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036566685}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3d020b42a901e44496bba20cb29a9c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nemanager: {fileID: 1036566700}
---- !u!114 &1036566699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036566685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f138b45a35c68f742952782cea3aa89e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nemanager: {fileID: 1036566700}
-  util: {fileID: 1036566697}
 --- !u!114 &1036566700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14636,7 +14626,7 @@ MonoBehaviour:
   elecmanager: {fileID: 2109663387496678654}
   ccfmodelcontrol: {fileID: 1036566686}
   neuronRoot: {fileID: 408216869}
-  neuronMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  neuronMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 3}
   neuronMaterial: {fileID: 2100000, guid: 42cc96581f509d543a1b29009a159442, type: 2}
   replayScale: 0.1
   neuronScale: 0.03
@@ -18988,10 +18978,10 @@ RectTransform:
   m_Father: {fileID: 497469905}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.5, y: -62.5}
-  m_SizeDelta: {x: 365, y: 115}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!328 &1596222717
 VideoPlayer:
@@ -19588,6 +19578,7 @@ MonoBehaviour:
     NetworkTransport: {fileID: 1636582618}
     RegisteredScenes:
     - MainScene
+    - SessionReplayScene
     AllowRuntimeSceneChanges: 0
     NetworkPrefabs:
     - Prefab: {fileID: 2570049487501862937, guid: 30a84a381b56b3144a0465f9c77c0b9a, type: 3}
@@ -21482,9 +21473,9 @@ RectTransform:
   m_Father: {fileID: 1596222716}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300.8333, y: -57.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 115, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1848585820
@@ -23581,9 +23572,9 @@ RectTransform:
   m_Father: {fileID: 1596222716}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 179.16666, y: -57.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 115, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2026122056
@@ -25201,6 +25192,7 @@ MonoBehaviour:
   util: {fileID: 1036566697}
   nemanager: {fileID: 1036566700}
   modelControl: {fileID: 1036566686}
+  networkOverride: 0
 --- !u!114 &2109663387496678655
 MonoBehaviour:
   m_ObjectHideFlags: 0

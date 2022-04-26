@@ -6,7 +6,7 @@ using Unity.Mathematics;
 // Note that all systems that modify neuron color need this -- otherwise neuron color *could* 
 // get reset on the same frame when the FPS is low
 [UpdateAfter(typeof(NeuronSpikingSystem))]
-public class IBLGLMSystem : SystemBase
+public partial class IBLGLMSystem : SystemBase
 {
     IBLTask iblTask;
 

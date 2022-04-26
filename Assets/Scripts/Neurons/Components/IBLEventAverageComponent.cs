@@ -4,5 +4,5 @@ using Unity.Mathematics;
 
 public struct IBLEventAverageComponent : IComponentData
 {
-    public FixedListFloat4096 spikeRate;
+    public FixedList4096Bytes<float> spikeRate;
 }

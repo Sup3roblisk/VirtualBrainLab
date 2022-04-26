@@ -6,7 +6,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
-public class PA_NeuronVisibilitySystem : SystemBase
+public partial class PA_NeuronVisibilitySystem : SystemBase
 {
     private NeuronEntityManager nemanager;
     private PA_Launch palaunch;

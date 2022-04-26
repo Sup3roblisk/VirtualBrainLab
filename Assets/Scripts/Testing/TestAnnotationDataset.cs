@@ -36,7 +36,7 @@ public class TestAnnotationDataset : MonoBehaviour
         ushort[] annData = util.LoadBinaryUShortHelper(annotationIndexFile);
         uint[] annMap = util.LoadBinaryUInt32Helper(annotationIndexFile + "_map");
         Debug.Log("Creating the CCF AnnotationDataset object");
-        annotationDataset = new AnnotationDataset(annData, annMap, ccfIndexMap);
+        //annotationDataset = new AnnotationDataset(annData, annMap, ccfIndexMap);
 
         colors = new Dictionary<int, Color>();
 

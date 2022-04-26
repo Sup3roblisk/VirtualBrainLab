@@ -3,7 +3,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
-public class NeuronSpikingSystem : SystemBase
+public partial class NeuronSpikingSystem : SystemBase
 {
     private NeuronEntityManager nemanager;
 

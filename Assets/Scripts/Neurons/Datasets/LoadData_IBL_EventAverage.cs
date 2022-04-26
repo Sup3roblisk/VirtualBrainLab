@@ -36,7 +36,7 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
         for (var ui = 0; ui < (spikeRates.Length / 1000); ui++)
         {
             //string uuid = (string)data[ui]["uuid"];
-            FixedListFloat4096 spikeRate = new FixedListFloat4096();
+            FixedList4096Bytes<float> spikeRate = new FixedList4096Bytes<float>();
 
             for (int i = 0; i < (SCALED_LEN*conditions); i++)
             {

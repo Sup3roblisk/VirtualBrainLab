@@ -9,7 +9,7 @@ using Unity.Transforms;
 // Note that all systems that modify neuron color need this -- otherwise neuron color *could*
 // get reset on the same frame when the FPS is low
 [UpdateAfter(typeof(NeuronSpikingSystem))]
-public class IBLEventAverageSystem : SystemBase
+public partial class IBLEventAverageSystem : SystemBase
 {
     IBLTask iblTask;
     private float trialTimeIndex;
