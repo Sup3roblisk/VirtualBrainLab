@@ -59,4 +59,6 @@ sysinfo.txt
 crashlytics-build.properties
 
 Assets/Resources/*
-Assets/AddressableAssets/*
+Assets/AddressableAssets/**/*.bytes
+Assets/AddressableAssets/**/*.csv
+Assets/AddressableAssets/**/*.obj
