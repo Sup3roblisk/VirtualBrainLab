@@ -2,6 +2,10 @@
 
 https://www.virtualbrainlab.org/
 
+# Preprocessing
+
+For the IBL replay task data is preprocessed by these scripts: https://github.com/dbirman/iblreplay-preproc
+
 # Install instructions
 
 [todo]
