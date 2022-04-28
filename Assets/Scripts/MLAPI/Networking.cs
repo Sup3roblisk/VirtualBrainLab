@@ -33,14 +33,16 @@ public class Networking : MonoBehaviour
     public void startServer()
     {
         NetworkManager.Singleton.StartServer();
-        serverPanel.SetActive(false);
+        if (serverPanel != null)
+            serverPanel.SetActive(false);
         LateStartServer();
     }
 
     public void startClient()
     {
         NetworkManager.Singleton.StartClient();
-        serverPanel.SetActive(false);
+        if (serverPanel != null)
+            serverPanel.SetActive(false);
         // Don't load datsets on client
         LateStartClient();
     }
@@ -48,7 +50,8 @@ public class Networking : MonoBehaviour
     public void startHost()
     {
         NetworkManager.Singleton.StartHost();
-        serverPanel.SetActive(false);
+        if (serverPanel != null)
+            serverPanel.SetActive(false);
         LateStartServer();
         LateStartClient();
     }
@@ -58,11 +61,19 @@ public class Networking : MonoBehaviour
         emanager.ServerSideSetup();
     }
 
-    void LateStartClient()
+    private async void LateStartClient()
     {
         // Call things that need to run Start() but only after confirming this is a client build
         GameObject main = GameObject.Find("main");
         main.GetComponent<CCFModelControl>().LateStart(true);
+        await main.GetComponent<CCFModelControl>().GetDefaultLoaded();
+        List<CCFTreeNode> defaultNodes = main.GetComponent<CCFModelControl>().GetDefaultLoadedNodes();
+        foreach (CCFTreeNode node in defaultNodes)
+        {
+            node.SetNodeModelVisibility(true);
+            node.GetNodeTransform().localPosition = Vector3.zero;
+            node.GetNodeTransform().localRotation = Quaternion.identity;
+        }
         // PlayerManager has a ClientStart() function you can call here, if needed
         probeAddPanel.SetActive(true);
     }

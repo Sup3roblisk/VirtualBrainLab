@@ -62,3 +62,5 @@ Assets/Resources/*
 Assets/AddressableAssets/**/*.bytes
 Assets/AddressableAssets/**/*.csv
 Assets/AddressableAssets/**/*.obj
+Assets/AddressableAssets/**/*.mp4
+Assets/AddressableAssets/**/*.txt
