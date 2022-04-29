@@ -16,7 +16,11 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 593ccea26d859684aaa3019c494aff99
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: f55f0fb73aa72cd49a32e9f080dbd0ff
+    m_Address: Assets/AddressableAssets/flatiron_info.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fc1257868a6ce1488968c72223134bd, type: 2}
   m_SchemaSet:

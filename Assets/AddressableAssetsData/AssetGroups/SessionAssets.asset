@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: SessionAssets
+  m_EditorClassIdentifier: 
+  m_GroupName: SessionAssets
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c6df2be0bbd543443b9b474e40db00fd
+  m_SerializeEntries:
+  - m_GUID: 90648cb807b7c00429c2e0ca15388f18
+    m_Address: Assets/AddressableAssets/IBLSessions/sessions.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 641e64accdede1043a585b38723d10f7
+    m_Address: Assets/AddressableAssets/IBLSessions/probe_trajectories.csv
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 008e1f1d9f34d2546ba108daab3f6040
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_left_times.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ecb7eb7e70512c3438c58f8e5223723f
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_right_times.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: efdb2ef3f0ec70c4b8099e1d673e6989
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_body_times.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0baa264f96a43364dbd51b5fd448521b
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_body_scaled.mp4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4e803a743ec779644bf09af1262843da
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_left_scaled.mp4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f4b6972135256f04c8f4b1d51da54fe9
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/73918ae1-e4fd-4c18-b132-00cb555b1ad2_right_scaled.mp4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2f0030969c5dbec438585e428a5c02fb
+    m_Address: Assets/AddressableAssets/IBLSessions/Files/file_urls_73918ae1-e4fd-4c18-b132-00cb555b1ad2_probe00.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5a9f935934633cd42b52d6cb08da2324
+    m_Address: Assets/AddressableAssets/IBLSessions/Files/file_urls_73918ae1-e4fd-4c18-b132-00cb555b1ad2_probe01.txt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 52ca61502fe7976429b15cf5997f6a9a
+    m_Address: Assets/AddressableAssets/IBLSessions/Clusters/c9fb5e2e-bd92-41d8-8b7e-394005860a1e.csv
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b9e1a719f91063348aa309ecbd76ad6d
+    m_Address: Assets/AddressableAssets/IBLSessions/Clusters/0851db85-2889-4070-ac18-a40e8ebd96ba.csv
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 9fc1257868a6ce1488968c72223134bd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ea5aceb3f3c66f94ba1bdcccefffd5bd, type: 2}
+    - {fileID: 11400000, guid: 4929333a8f8553443b67634dc3ca5481, type: 2}
