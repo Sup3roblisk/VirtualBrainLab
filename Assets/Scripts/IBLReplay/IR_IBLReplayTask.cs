@@ -10,7 +10,7 @@ using Unity.Mathematics;
 using Unity.Collections;
 using UnityEngine.Video;
 
-public class IBLReplayTask
+public class IR_IBLReplayTask : Experiment
 {
     private Utils util;
     private Transform wheelTransform;
@@ -19,6 +19,7 @@ public class IBLReplayTask
     private ExperimentManager emanager;
     private VisualStimulusManager vsmanager;
     private NeuronEntityManager nemanager;
+    private IR_IBLReplayManager replayManager;
 
     private Dictionary<string, Dictionary<string, string>> sessionURIs;
     private Dictionary<string, Dictionary<int,int[]>> sessionCluUUIDIdxs; // converts from clu to uuid index
@@ -26,14 +27,8 @@ public class IBLReplayTask
     private Dictionary<string, Dictionary<int, Vector3[]>> trajectoryData;
 
     private GameObject _uiPanel;
-    private Slider uiSlider;
     private TMP_Dropdown uiDropdown;
 
-    private string[] dataTypes = { "spikes.times", "spikes.clusters", "wheel.position",
-        "wheel.timestamps", "goCue_times", "feedback_times", "feedbackType",
-        "contrastLeft","contrastRight","lick.times"};
-
-    private List<string> waitingForData;
     private bool dataLoaded = false;
 
     private Dictionary<int, Entity> neurons;
@@ -73,7 +68,7 @@ public class IBLReplayTask
     const float scale = 1000;
     private SpikingComponent spikedComponent;
 
-    public IBLReplayTask(Utils util, GameObject UIPanel, Transform wheelTransform, 
+    public IR_IBLReplayTask(Utils util, GameObject UIPanel, Transform wheelTransform, 
         AudioManager audmanager, LickBehavior lickBehavior, 
         VisualStimulusManager vsmanager, NeuronEntityManager nemanager,
         List<Transform> probeTips) 
@@ -99,9 +94,6 @@ public class IBLReplayTask
         // Setup task info
         LoadTaskInfo();
 
-        // UI Panel set up before making inactive
-        uiDropdown = _uiPanel.GetComponentInChildren<TMP_Dropdown>();
-        uiSlider = _uiPanel.GetComponentInChildren<Slider>();
         
         // Populate panel
         List<TMP_Dropdown.OptionData> eids = new List<TMP_Dropdown.OptionData>();
@@ -322,9 +314,9 @@ public class IBLReplayTask
     //    SetTaskRunning(false);
     //}
 
-    public void TaskUpdate()
+    public override void TaskUpdate()
     {
-        if (true) //TaskLoaded() && TaskRunning()
+        if (TaskLoaded() && TaskRunning())
         {
 
             if (!dataLoaded)
@@ -489,4 +481,41 @@ public class IBLReplayTask
         return spikesThisFrame;
     }
 
+    public override void LoadTask()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void RunTask()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void PauseTask()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void StopTask()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override float TaskTime()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Handle a change in the Time.timeScale value
+    /// </summary>
+    public override void ChangeTimescale()
+    {
+        replayManager.UpdateVideoSpeed();
+    }
+
+    public override void SetTaskTime(float newTime)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -9,7 +9,10 @@ public class IR_IBLReplayManager : MonoBehaviour
 {
     [SerializeField] Networking networking;
     [SerializeField] Utils util;
-    [SerializeField] IR_ReplayControls replayControls;
+
+    // Probes
+    [SerializeField] GameObject iblReplayProbesGO;
+    List<Transform> tips;
 
     // UI Elemetns
     [SerializeField] TMP_Dropdown sessionDropdown;
@@ -26,14 +29,25 @@ public class IR_IBLReplayManager : MonoBehaviour
 
     // Sessions
     string[] sessions;
-    Dictionary<string, ReplaySession> loadedSessions;
-    ReplaySession activeSession;
+    Dictionary<string, IR_ReplaySession> loadedSessions;
+    IR_ReplaySession activeSession;
 
     private void Awake()
     {
         LoadTrajectories();
-        loadedSessions = new Dictionary<string, ReplaySession>();
+        loadedSessions = new Dictionary<string, IR_ReplaySession>();
         LoadSessionInfo();
+
+        if (iblReplayProbesGO)
+        {
+            // get probe tips and inactivate them
+            Transform p0tip = iblReplayProbesGO.transform.Find("probe0_tip");
+            p0tip.gameObject.SetActive(false);
+            Transform p1tip = iblReplayProbesGO.transform.Find("probe1_tip");
+            p1tip.gameObject.SetActive(false);
+            tips = new List<Transform>();
+            tips.Add(p0tip); tips.Add(p1tip);
+        }
     }
 
     public string GetAssetPrefix()
@@ -113,14 +127,12 @@ public class IR_IBLReplayManager : MonoBehaviour
             activeSession = loadedSessions[eid];
         else
         {
-            ReplaySession session = new ReplaySession(eid, this, util, trajectories[eid]);
+            IR_ReplaySession session = new IR_ReplaySession(eid, this, util, trajectories[eid]);
             loadedSessions.Add(eid, session);
 
-            replayControls.SetControlInteraction(false);
             await session.LoadAssets();
 
             activeSession = session;
-            replayControls.SetControlInteraction(true);
         }
     }
 
@@ -130,4 +142,12 @@ public class IR_IBLReplayManager : MonoBehaviour
         bodyPlayer.clip = body;
         rightPlayer.clip = right;
     }
+
+    public void UpdateVideoSpeed()
+    {
+        leftPlayer.playbackSpeed = Time.timeScale;
+        bodyPlayer.playbackSpeed = Time.timeScale;
+        rightPlayer.playbackSpeed = Time.timeScale;
+    }
+
 }

@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Video;
 
-public class ReplaySession
+public class IR_ReplaySession
 {
     IR_IBLReplayManager replayManager;
     Utils util;
@@ -29,8 +29,13 @@ public class ReplaySession
     private Dictionary<string, float> videoTimes;
     private Dictionary<int, Vector3[]> trajectories;
 
+    // TIME DATA
+    private float[] quantiles = { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
+    private Dictionary<int, int[]> quantileIndexes;
+    private Dictionary<int, float[]> quantileTimes;
+    private Dictionary<int, float> maxTime;
 
-    public ReplaySession(string eid, IR_IBLReplayManager replayManager, Utils util, Dictionary<int, Vector3[]> trajectories)
+    public IR_ReplaySession(string eid, IR_IBLReplayManager replayManager, Utils util, Dictionary<int, Vector3[]> trajectories)
     {
         this.eid = eid;
         this.replayManager = replayManager;
@@ -43,6 +48,10 @@ public class ReplaySession
         pids = new List<string>();
         coords = new Dictionary<string, List<Vector3>>();
         videoTimes = new Dictionary<string, float>();
+
+        quantileIndexes = new Dictionary<int, int[]>();
+        quantileTimes = new Dictionary<int, float[]>();
+        maxTime = new Dictionary<int, float>();
     }
 
     public async Task<bool> LoadAssets()
@@ -92,13 +101,48 @@ public class ReplaySession
         Debug.Log("Receiving data: " + type + " with data type " + receivedData.GetType());
         data[type] = receivedData;
 
+        if (type.Contains("spikes.times0"))
+            ProcessSpikeData(data[type], 0);
+        if (type.Contains("spikes.times1"))
+            ProcessSpikeData(data[type], 1);
+
         waitingForData.Remove(type);
         if (waitingForData.Count == 0)
         {
             // All data acquired, flag that task can start replaying
+            Debug.Log("All data loaded");
             taskLoadedSource.SetResult(true);
         }
 
+    }
+
+    /// <summary>
+    /// Run through the spike times array and save out timestamp of the 10% quantiles. Also save the max value
+    /// This saves time when the user changes what time point they are in time
+    /// </summary>
+    private void ProcessSpikeData(Array stData, int probe)
+    {
+        double[] st = new double[stData.Length];
+        stData.CopyTo(st, 0);
+
+        maxTime[probe] = (float)st.Max();
+
+        int[] quantIdxs = new int[quantiles.Length];
+        float[] quantTimes = new float[quantiles.Length];
+
+        int prevIndex = 0;
+        for (int i = 0; i < quantiles.Length; i++)
+        {
+            float quantile = quantiles[i];
+            quantTimes[i] = maxTime[probe] * quantile;
+
+            while ((prevIndex < st.Length) && (st[prevIndex] < quantTimes[i]))
+                prevIndex++;
+            quantIdxs[i] = prevIndex;
+        }
+
+        quantileIndexes[probe] = quantIdxs;
+        quantileTimes[probe] = quantTimes;
     }
 
     private void ParseFileURLs(TextAsset fileURLsAsset)

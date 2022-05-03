@@ -31,32 +31,13 @@ public class ExperimentManager : MonoBehaviour
 
     private Experiment activeExperiment;
 
-    private IBLTask iblTask;
-    public GameObject iblTaskUIPanel;
-    [SerializeField] private GameObject iblReplayProbesGO;
-    public GameObject iblReplayTaskUIPanel;
-
     private List<Experiment> experiments;
 
     void Awake()
     {
         Time.timeScale = 1.0f;
 
-        iblTask = new IBLTask(vsmanager, audmanager, lickBehavior, wheelRotationBehavior, iblTaskUIPanel);
-
-        if (iblReplayProbesGO)
-        {
-            // get probe tips and inactivate them
-            Transform p0tip = iblReplayProbesGO.transform.Find("probe0_tip");
-            p0tip.gameObject.SetActive(false);
-            Transform p1tip = iblReplayProbesGO.transform.Find("probe1_tip");
-            p1tip.gameObject.SetActive(false);
-            List<Transform> tips = new List<Transform>();
-            tips.Add(p0tip); tips.Add(p1tip);
-        }
-
         experiments = new List<Experiment>();
-        experiments.Add(iblTask);
     }
 
     // Start is called before the first frame update
@@ -106,58 +87,70 @@ public class ExperimentManager : MonoBehaviour
 
     public void SetupUI()
     {
-        if (experimentChooser)
-        {
-            List<TMP_Dropdown.OptionData> experimentNames = new List<TMP_Dropdown.OptionData>();
-            foreach (Experiment exp in experiments)
-            {
-                experimentNames.Add(new TMP_Dropdown.OptionData(exp.Name()));
-            }
+        //if (experimentChooser)
+        //{
+        //    List<TMP_Dropdown.OptionData> experimentNames = new List<TMP_Dropdown.OptionData>();
+        //    foreach (Experiment exp in experiments)
+        //    {
+        //        experimentNames.Add(new TMP_Dropdown.OptionData(exp.Name()));
+        //    }
 
-            experimentChooser.options = experimentNames;
-            experimentChooser.onValueChanged.AddListener(delegate { ChangeExperiment(); });
+        //    experimentChooser.options = experimentNames;
+        //    experimentChooser.onValueChanged.AddListener(delegate { ChangeExperiment(); });
 
-            ChangeExperiment();
-        }
+        //    ChangeExperiment();
+        //}
     }
 
     public void ChangeExperiment()
     {
-        if (activeExperiment!= null)
-        {
-            activeExperiment.StopTask();
-        }
-        activeExperiment = experiments[experimentChooser.value];
+        //if (activeExperiment!= null)
+        //{
+        //    activeExperiment.StopTask();
+        //}
+        //activeExperiment = experiments[experimentChooser.value];
 
-        // Set all buttons to not be interactable
-        if (activeExperiment.TaskLoaded())
-        {
-            run.interactable = true;
-            pause.interactable = false;
-            stop.interactable = false;
-        }
-        else
-        {
-            activeExperiment.LoadTask();
-            run.interactable = false;
-            pause.interactable = false;
-            stop.interactable = false;
-        }
+        //// Set all buttons to not be interactable
+        //if (activeExperiment.TaskLoaded())
+        //{
+        //    run.interactable = true;
+        //    pause.interactable = false;
+        //    stop.interactable = false;
+        //}
+        //else
+        //{
+        //    activeExperiment.LoadTask();
+        //    run.interactable = false;
+        //    pause.interactable = false;
+        //    stop.interactable = false;
+        //}
     }
 
-    public void ChangeExperiment(int expID)
+    /// <summary>
+    /// Start running a new experiment
+    /// </summary>
+    /// <param name="newExperiment"></param>
+    public void ChangeExperiment(Experiment newExperiment)
     {
-        if (expID<0)
-        {
+        if (activeExperiment != null)
             activeExperiment.StopTask();
-        }
-        else
-        {
-            activeExperiment = experiments[expID];
-            activeExperiment.RunTask();
-        }
+
+        activeExperiment = newExperiment;
+        activeExperiment.RunTask();
     }
 
+    // TIME CONTROLS
+
+    public void ChangeTime(float newTimePerc)
+    {
+
+    }
+
+    // BUTTON CONTROLS
+
+    /// <summary>
+    /// Continue playing the current experiment
+    /// </summary>
     public void Play()
     {
         activeExperiment.RunTask();
@@ -171,7 +164,7 @@ public class ExperimentManager : MonoBehaviour
         pause.interactable = false;
     }
 
-    public void Reset()
+    public void Stop()
     {
         activeExperiment.StopTask();
         pause.interactable = false;
@@ -182,40 +175,17 @@ public class ExperimentManager : MonoBehaviour
     {
         Time.timeScale = Time.timeScale * 2;
         UpdateTimescaleText();
-        UpdateVideoSpeed();
     }
 
     public void SlowDown()
     {
         Time.timeScale = Time.timeScale / 2;
         UpdateTimescaleText();
-        UpdateVideoSpeed();
     }
 
     private void UpdateTimescaleText()
     {
         GameObject.Find("Replay_Speed").GetComponent<TextMeshProUGUI>().text = Time.timeScale + "x";
-    }
-
-    private void UpdateVideoSpeed()
-    {
-        foreach (GameObject videoGO in GameObject.FindGameObjectsWithTag("VideoWindow"))
-        {
-            foreach (VideoPlayer video in videoGO.GetComponents<VideoPlayer>())
-            {
-                video.playbackSpeed = Time.timeScale;
-            }
-        }
-    }
-
-    //public void QueueSpike()
-    //{
-    //    elecmanager.QueueSpike();
-    //}
-
-    public IBLTask GetIBLTask()
-    {
-        return iblTask;
     }
 }
 
@@ -244,13 +214,15 @@ public abstract class Experiment
 
     public abstract void TaskUpdate();
 
-    public abstract void SetLevel(int level);
-
     public abstract void RunTask();
 
     public abstract void PauseTask();
 
     public abstract void StopTask();
 
+    public abstract void ChangeTimescale();
+
     public abstract float TaskTime();
+
+    public abstract void SetTaskTime(float newTime);
 }
