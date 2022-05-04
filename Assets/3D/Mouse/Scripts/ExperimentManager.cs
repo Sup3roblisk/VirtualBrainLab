@@ -70,6 +70,14 @@ public class ExperimentManager : MonoBehaviour
     }
 
     /// <summary>
+    /// [TODO] REMOVE THIS!! This should not be hardcoded like this
+    /// </summary>
+    public IBLTask GetIBLTask()
+    {
+        return (IBLTask)experiments[0];
+    }
+
+    /// <summary>
     /// Setup the experiment UI chooser dropdowns
     /// </summary>
     public void SetupUI()

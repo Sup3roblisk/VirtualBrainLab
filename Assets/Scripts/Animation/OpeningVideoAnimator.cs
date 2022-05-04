@@ -26,7 +26,7 @@ public class OpeningVideoAnimator : MonoBehaviour
 
     private void DelayedExperimentStart()
     {
-        expmanager.ChangeExperiment(0);
-        nemanager.RemoveAllNeurons();
+        //expmanager.ChangeExperiment(0);
+        //nemanager.RemoveAllNeurons();
     }
 }
