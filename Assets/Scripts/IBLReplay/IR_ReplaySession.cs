@@ -28,7 +28,7 @@ public class IR_ReplaySession
     private Dictionary<string, string> URIs;
     private Dictionary<string, Array> data;
     private List<string> pids;
-    private Dictionary<string, List<Vector3>> coords;
+    private Dictionary<int, List<Vector3>> coords;
     private Dictionary<string, float> videoTimes;
     private Dictionary<int, Vector3[]> trajectories;
 
@@ -38,23 +38,108 @@ public class IR_ReplaySession
     private Dictionary<int, float[]> quantileTimes;
     private Dictionary<int, float> maxTime;
 
-    public IR_ReplaySession(string eid, IR_IBLReplayManager replayManager, Utils util, Dictionary<int, Vector3[]> trajectories)
+    public IR_ReplaySession(string eid, IR_IBLReplayManager replayManager, Utils util)
     {
         this.eid = eid;
         this.replayManager = replayManager;
         this.util = util;
-        this.trajectories = trajectories;
 
         waitingForData = new List<string>();
         URIs = new Dictionary<string, string>();
         data = new Dictionary<string, Array>();
         pids = new List<string>();
-        coords = new Dictionary<string, List<Vector3>>();
+        coords = new Dictionary<int, List<Vector3>>();
         videoTimes = new Dictionary<string, float>();
 
         quantileIndexes = new Dictionary<int, int[]>();
         quantileTimes = new Dictionary<int, float[]>();
         maxTime = new Dictionary<int, float>();
+
+        LoadTrajectoryData();
+    }
+
+    private async void LoadTrajectoryData()
+    {
+        // Load the probe trajectory CSV
+        string filename = replayManager.GetAssetPrefix() + "probe_trajectories.csv";
+        AsyncOperationHandle<TextAsset> trajLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
+        await trajLoader.Task;
+
+        List<Dictionary<string, object>> trajectoryCSVdata = CSVReader.ParseText(trajLoader.Result.text);
+
+        for (int i = 0; i < trajectoryCSVdata.Count; i++)
+        {
+            Dictionary<string, object> row = trajectoryCSVdata[i];
+
+            string cEid = (string)row["eid"];
+
+            if (eid == cEid)
+            {
+                int probe = (int)char.GetNumericValue(((string)row["probe"])[6]);
+
+                float ml = Convert.ToSingle(row["ml"]);
+                float ap = Convert.ToSingle(row["ap"]);
+                float dv = Convert.ToSingle(row["dv"]);
+                float depth = Convert.ToSingle(row["depth"]);
+                float theta = Convert.ToSingle(row["theta"]);
+                float phi = Convert.ToSingle(row["phi"]);
+
+                Vector3 mlapdv = new Vector3(ml, ap, dv);
+                Vector3 dtp = new Vector3(depth, theta, phi);
+
+                trajectories.Add(probe, new Vector3[] { mlapdv, dtp });
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get the stored data. Can be:
+    /// spikes.times0/1
+    /// spikes.clusters0/1
+    /// wheel.position
+    /// wheel.timestamps
+    /// goCue_times
+    /// feedback_times
+    /// feedbackType
+    /// contrastLeft
+    /// contrastRight
+    /// lick.times
+    /// </summary>
+    /// <param name="dataType"></param>
+    /// <returns></returns>
+    public Array GetData(string dataType)
+    {
+        return data[dataType];
+    }
+
+    /// <summary>
+    /// Get the coordinates of all the clusters on a probe
+    /// </summary>
+    /// <param name="probe">[0/1]</param>
+    /// <returns></returns>
+    public List<Vector3> GetMLAPDVCoords(int probe)
+    {
+        return coords[probe];
+    }
+
+    /// <summary>
+    /// Get the start time offset in (ms? s?) for the video
+    /// </summary>
+    /// <param name="videoOpt">left/right/body</param>
+    /// <returns></returns>
+    public float GetVideoStartTime(string videoOpt)
+    {
+        return videoTimes[videoOpt];
+    }
+
+    /// <summary>
+    /// Get the probe trajectory information for the current probe
+    /// </summary>
+    /// <param name="probe"></param>
+    /// <returns></returns>
+    public Vector3[] GetProbeTrajectory(int probe)
+    {
+        return trajectories[probe];
     }
 
     public async Task<bool> LoadAssets()
@@ -189,7 +274,7 @@ public class IR_ReplaySession
 
             string filename = replayManager.GetAssetPrefix() + "Clusters/" + pid + ".csv";
             AsyncOperationHandle<TextAsset> clusterLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
-            clusterLoader.Completed += handle => { ParseClusterCoordinates(pid, handle.Result); };
+            clusterLoader.Completed += handle => { ParseClusterCoordinates(i, handle.Result); };
 
             loaders[i] = clusterLoader.Task;
         }
@@ -199,7 +284,7 @@ public class IR_ReplaySession
         return true;
     }
 
-    private void ParseClusterCoordinates(string pid, TextAsset coordsAsset)
+    private void ParseClusterCoordinates(int pid, TextAsset coordsAsset)
     {
         List<Dictionary<string, object>> data = CSVReader.ParseText(coordsAsset.text);
 

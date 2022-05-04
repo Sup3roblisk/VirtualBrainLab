@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class IR_IBLReplayManager : MonoBehaviour
@@ -20,23 +21,26 @@ public class IR_IBLReplayManager : MonoBehaviour
     [SerializeField] VideoPlayer leftPlayer;
     [SerializeField] VideoPlayer bodyPlayer;
     [SerializeField] VideoPlayer rightPlayer;
+    [SerializeField] Button playButton;
+    [SerializeField] Button slowButton;
+    [SerializeField] Button fastbutton;
+    [SerializeField] Button pauseButton;
+    [SerializeField] Button stopButton;
 
     // Addressable Assets
     [SerializeField] string assetPrefix;
     [SerializeField] AssetReference sessionAsset;
 
-    // Data
-    private Dictionary<string, Dictionary<int, Vector3[]>> trajectories;
-
     // Sessions
     string[] sessions;
     Dictionary<string, IR_ReplaySession> loadedSessions;
-    IR_IBLReplayTask activeTask;
     IR_ReplaySession activeSession;
+
+    // Code that runs the actual task
+    IR_IBLReplayTask activeTask;
 
     private void Awake()
     {
-        LoadTrajectories();
         loadedSessions = new Dictionary<string, IR_ReplaySession>();
         LoadSessionInfo();
 
@@ -71,41 +75,6 @@ public class IR_IBLReplayManager : MonoBehaviour
 
     }
 
-    public async void LoadTrajectories()
-    {
-        string filename = GetAssetPrefix() + "probe_trajectories.csv";
-        AsyncOperationHandle<TextAsset> trajLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
-
-        await trajLoader.Task;
-
-        List<Dictionary<string, object>> trajData = CSVReader.ParseText(trajLoader.Result.text);
-
-        trajectories = new Dictionary<string, Dictionary<int, Vector3[]>>();
-
-        for (int i = 0; i < trajData.Count; i++)
-        {
-            Dictionary<string, object> row = trajData[i];
-
-            string eid = (string)row["eid"];
-            int probe = (int)char.GetNumericValue(((string)row["probe"])[6]);
-
-            float ml = (float)row["ml"];
-            float ap = (float)row["ap"];
-            float dv = (float)row["dv"];
-            float depth = (float)row["depth"];
-            float theta = (float)row["theta"];
-            float phi = (float)row["phi"];
-
-            Vector3 mlapdv = new Vector3(ml, ap, dv);
-            Vector3 dtp = new Vector3(depth, theta, phi);
-
-            if (!trajectories.ContainsKey(eid))
-                trajectories[eid] = new Dictionary<int, Vector3[]>();
-
-            trajectories[eid].Add(probe, new Vector3[] { mlapdv, dtp });
-        }
-    }
-
     public void ChangeSession(int newSessionID)
     {
         string eid = sessions[newSessionID - 1];
@@ -129,12 +98,13 @@ public class IR_IBLReplayManager : MonoBehaviour
             activeSession = loadedSessions[eid];
         else
         {
-            IR_ReplaySession session = new IR_ReplaySession(eid, this, util, trajectories[eid]);
+            IR_ReplaySession session = new IR_ReplaySession(eid, this, util);
             loadedSessions.Add(eid, session);
 
             await session.LoadAssets();
 
             activeSession = session;
+            activeTask.SetSession(activeSession);
         }
     }
 
@@ -152,4 +122,35 @@ public class IR_IBLReplayManager : MonoBehaviour
         rightPlayer.playbackSpeed = Time.timeScale;
     }
 
+    public void JumpTime(float jumpTimePerc)
+    {
+
+    }
+
+    public void PlayTask()
+    {
+        activeTask.RunTask();
+    }
+
+    public void PauseTask()
+    {
+        activeTask.PauseTask();
+    }
+
+    public void StopTask()
+    {
+        activeTask.StopTask();
+    }
+
+    public void SpeedupTask()
+    {
+        Time.timeScale = Time.timeScale * 2f;
+        UpdateVideoSpeed();
+    }
+
+    public void SlowdownTask()
+    {
+        Time.timeScale = Time.timeScale / 2f;
+        UpdateVideoSpeed();
+    }
 }

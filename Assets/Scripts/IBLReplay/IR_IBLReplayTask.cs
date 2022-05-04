@@ -10,6 +10,14 @@ using Unity.Mathematics;
 using Unity.Collections;
 using UnityEngine.Video;
 
+/// <summary>
+/// IBL REPLAY TASK
+/// 
+/// This class represents the user interface and functionality to replay a session of an IBL experiment
+/// all of the data is loaded and contained in an IR_ReplaySession object, while this class handles the
+/// UI and visuals.
+/// 
+/// </summary>
 public class IR_IBLReplayTask : Experiment
 {
     private Utils util;
@@ -21,19 +29,12 @@ public class IR_IBLReplayTask : Experiment
     private NeuronEntityManager nemanager;
     private IR_IBLReplayManager replayManager;
 
-    private Dictionary<string, Dictionary<string, string>> sessionURIs;
-    private Dictionary<string, Dictionary<int,int[]>> sessionCluUUIDIdxs; // converts from clu to uuid index
-    private Dictionary<string, Dictionary<string, Array>> sessionData;
-    private Dictionary<string, Dictionary<int, Vector3[]>> trajectoryData;
-
     private GameObject _uiPanel;
     private TMP_Dropdown uiDropdown;
 
     private bool dataLoaded = false;
 
     private Dictionary<int, Entity> neurons;
-    List<Dictionary<string, object>> mlapdv;
-    List<Dictionary<string, object>> trajectories;
 
     // PROBES
     private List<Transform> tips;
@@ -63,6 +64,8 @@ public class IR_IBLReplayTask : Experiment
     private bool videoPlaying;
     VideoPlayer[] videos;
 
+    // DATA
+    IR_ReplaySession replaySessionData;
 
     // OTHER
     const float scale = 1000;
@@ -84,24 +87,12 @@ public class IR_IBLReplayTask : Experiment
         // Setup variables
         emanager = GameObject.Find("main").GetComponent<ExperimentManager>();
         spikedComponent = new SpikingComponent { spiking = 1f };
+    }
 
-        // Setup task info
-        LoadTaskInfo();
-        
-        // Populate panel
-        List<TMP_Dropdown.OptionData> eids = new List<TMP_Dropdown.OptionData>();
-        foreach (string eid in sessionURIs.Keys)
-        {
-            eids.Add(new TMP_Dropdown.OptionData(eid));
-        }
-        uiDropdown.options = eids;
-        //uiDropdown.onValueChanged.AddListener(delegate { LoadDropdownEID(); });
-
-        // Load CCF coordinates
-        mlapdv = CSVReader.ReadFromResources("Datasets/ibl/ccf_mlapdv");
-
-        _uiPanel.SetActive(false);
-
+    public void SetSession(IR_ReplaySession newSessionData)
+    {
+        replaySessionData = newSessionData;
+        SetupTask();
     }
 
     public void UpdateTime()
@@ -113,91 +104,10 @@ public class IR_IBLReplayTask : Experiment
         float displayMinutes = (seconds / 60) % 60;
         float displayHours = (seconds / 3600) % 24;
 
-        //private void UpdateTime()
-        //{
-        //    TimeSpan timeSpan = TimeSpan.FromSeconds(sessionCurrentTime);
-        //    string timeText = string.Format("{0:D2}h.{1:D2}m.{2:D2}.{3:D3}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
-        //    timerText.SetText(timeText);
-        //}
         GameObject replayText = GameObject.Find("Replay_Time");
         if (replayText)
             replayText.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}h:{1:00}m:{2:00}.{3:000}", displayHours, displayMinutes, displaySeconds, displayMilliseconds);
     }
-
-    // Load task info sets everything up
-    private void LoadTaskInfo()
-    {
-        sessionURIs = new Dictionary<string, Dictionary<string, string>>();
-        sessionData = new Dictionary<string, Dictionary<string, Array>>();
-        sessionCluUUIDIdxs = new Dictionary<string, Dictionary<int, int[]>>();
-
-        UnityEngine.Object[] objects = Resources.LoadAll("FlatironPaths");
-        foreach (UnityEngine.Object obj in objects)
-        {
-            ParseTaskInfo(obj);
-        }
-
-        // Load the probe trajectory CSV
-        trajectories = CSVReader.ReadFromResources("Datasets/ibl/probe_trajectories");
-
-        ParseTrajectoryInfo();
-    }
-
-    private void ParseTrajectoryInfo()
-    {
-        //private Dictionary<string, Dictionary<int, Vector3[]>> trajectoryData;
-        trajectoryData = new Dictionary<string, Dictionary<int, Vector3[]>>();
-
-        for (int i = 0; i < trajectories.Count; i++)
-        {
-            Dictionary<string, object> row = trajectories[i];
-
-            string eid = (string)row["eid"];
-            int probe = (int)char.GetNumericValue(((string)row["probe"])[6]);
-
-            float ml = Convert.ToSingle(row["ml"]);
-            float ap = Convert.ToSingle(row["ap"]);
-            float dv = Convert.ToSingle(row["dv"]);
-            float depth = Convert.ToSingle(row["depth"]);
-            float theta = Convert.ToSingle(row["theta"]);
-            float phi = Convert.ToSingle(row["phi"]);
-
-            Vector3 mlapdv = new Vector3(ml, ap, dv);
-            Vector3 dtp = new Vector3(depth, theta, phi);
-
-            if (!trajectoryData.ContainsKey(eid))
-            {
-                trajectoryData[eid] = new Dictionary<int, Vector3[]>();
-            }
-            trajectoryData[eid].Add(probe, new Vector3[]{ mlapdv, dtp});
-        }
-    }
-
-    private void ParseTaskInfo(UnityEngine.Object obj)
-    {
-       
-        //else if (obj.name.Contains("uuid_idx"))
-        //{
-        //    // This file contains the UUID indexes for these clusters
-        //    // save this into sessionUUIDs
-        //    string data = uriTargets[2];
-        //    string[] clusterIdxs = data.Split(',');
-        //    if (!sessionCluUUIDIdxs.ContainsKey(eid))
-        //    {
-        //        sessionCluUUIDIdxs.Add(eid, new Dictionary<int, int[]>());
-        //    }
-        //    // Note -1 because the last thing in the file is a comma
-        //    sessionCluUUIDIdxs[eid].Add(probeNum, new int[clusterIdxs.Length - 1]);
-        //    for (int i = 0; i < (clusterIdxs.Length-1); i++)
-        //    {
-        //        string cIdx = clusterIdxs[i];
-        //        sessionCluUUIDIdxs[eid][probeNum][i] = int.Parse(cIdx);
-        //    }
-        //}
-    }
-
-
-    //private string[] dataTypes = { "spikes.times", "spikes.clusters", "wheel.position", "wheel.timestamps", "goCue_times", "feedback_times", "feedbackType" };
 
     private void SetupTask()
     {
@@ -211,22 +121,7 @@ public class IR_IBLReplayTask : Experiment
 
         probes = new List<int>();
 
-        // Get the key in the trajectoryData file
-        // note there's an issue here, the cEID seems to have an extra character in it? Maybe a \n or something
-        // [TODO: look into fixing]
-        string trajKey = "";
-        foreach (string key in trajectoryData.Keys)
-        {
-            if (cEID.Contains(key))
-            {
-                trajKey = key;
-                break;
-            }
-        }
-        if (trajKey.Length == 0)
-        {
-            Debug.LogError("eid: " + cEID + " is missing in trajectory data keys");
-        }
+
 
         foreach (int probe in sessionCluUUIDIdxs[cEID].Keys)
         {
