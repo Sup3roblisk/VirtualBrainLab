@@ -227,7 +227,7 @@ public abstract class Experiment
 
     public abstract void StopTask();
 
-    public abstract void ChangeTimescale()
+    public abstract void ChangeTimescale();
 
     public abstract float TaskTime();
 
