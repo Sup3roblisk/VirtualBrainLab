@@ -8,6 +8,9 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Video;
 
+/// <summary>
+/// This class stores the data loaded for a single IBL experiment
+/// </summary>
 public class IR_ReplaySession
 {
     IR_IBLReplayManager replayManager;

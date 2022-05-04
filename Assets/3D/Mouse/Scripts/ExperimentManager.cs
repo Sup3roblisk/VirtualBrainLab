@@ -27,7 +27,10 @@ public class ExperimentManager : MonoBehaviour
     public Button pause;
     public Button stop;
 
-    public TMP_Dropdown experimentChooser;
+    //Setting the experiment chooser field will enable the experiment manager
+    [SerializeField] private TMP_Dropdown experimentChooser;
+
+    [SerializeField] private GameObject UIPanel;
 
     private Experiment activeExperiment;
 
@@ -38,6 +41,7 @@ public class ExperimentManager : MonoBehaviour
         Time.timeScale = 1.0f;
 
         experiments = new List<Experiment>();
+        experiments.Add(new IBLTask(vsmanager,audmanager,lickBehavior,wheelRotationBehavior, UIPanel));
     }
 
     // Start is called before the first frame update
@@ -65,7 +69,51 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
-    private void UpdateTime()
+    /// <summary>
+    /// Setup the experiment UI chooser dropdowns
+    /// </summary>
+    public void SetupUI()
+    {
+        if (experimentChooser)
+        {
+            List<TMP_Dropdown.OptionData> experimentNames = new List<TMP_Dropdown.OptionData>();
+            foreach (Experiment exp in experiments)
+            {
+                experimentNames.Add(new TMP_Dropdown.OptionData(exp.Name()));
+            }
+
+            experimentChooser.options = experimentNames;
+            experimentChooser.onValueChanged.AddListener(delegate { ChangeExperiment(); });
+
+            ChangeExperiment();
+        }
+    }
+
+    public void ChangeExperiment()
+    {
+        if (activeExperiment != null)
+        {
+            activeExperiment.StopTask();
+        }
+        activeExperiment = experiments[experimentChooser.value];
+
+        // Set all buttons to not be interactable
+        if (activeExperiment.TaskLoaded())
+        {
+            run.interactable = true;
+            pause.interactable = false;
+            stop.interactable = false;
+        }
+        else
+        {
+            activeExperiment.LoadTask();
+            run.interactable = false;
+            pause.interactable = false;
+            stop.interactable = false;
+        }
+    }
+
+    public void UpdateTime()
     {
         float seconds = activeExperiment.TaskTime();
 
@@ -83,47 +131,6 @@ public class ExperimentManager : MonoBehaviour
         GameObject replayText = GameObject.Find("Replay_Time");
         if (replayText)
             replayText.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}h:{1:00}m:{2:00}.{3:000}", displayHours, displayMinutes, displaySeconds, displayMilliseconds);
-    }
-
-    public void SetupUI()
-    {
-        //if (experimentChooser)
-        //{
-        //    List<TMP_Dropdown.OptionData> experimentNames = new List<TMP_Dropdown.OptionData>();
-        //    foreach (Experiment exp in experiments)
-        //    {
-        //        experimentNames.Add(new TMP_Dropdown.OptionData(exp.Name()));
-        //    }
-
-        //    experimentChooser.options = experimentNames;
-        //    experimentChooser.onValueChanged.AddListener(delegate { ChangeExperiment(); });
-
-        //    ChangeExperiment();
-        //}
-    }
-
-    public void ChangeExperiment()
-    {
-        //if (activeExperiment!= null)
-        //{
-        //    activeExperiment.StopTask();
-        //}
-        //activeExperiment = experiments[experimentChooser.value];
-
-        //// Set all buttons to not be interactable
-        //if (activeExperiment.TaskLoaded())
-        //{
-        //    run.interactable = true;
-        //    pause.interactable = false;
-        //    stop.interactable = false;
-        //}
-        //else
-        //{
-        //    activeExperiment.LoadTask();
-        //    run.interactable = false;
-        //    pause.interactable = false;
-        //    stop.interactable = false;
-        //}
     }
 
     /// <summary>
@@ -220,7 +227,7 @@ public abstract class Experiment
 
     public abstract void StopTask();
 
-    public abstract void ChangeTimescale();
+    public abstract void ChangeTimescale()
 
     public abstract float TaskTime();
 

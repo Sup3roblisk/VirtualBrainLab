@@ -77,6 +77,8 @@ public class IBLTask : Experiment
     private int t_respSide;
     private float t_trialStartTime;
 
+
+    // [TODO] The UI panel should *not* get passed in from the ExperimentManager class!!!
     public IBLTask(VisualStimulusManager vsmanager, 
         AudioManager audmanager, LickBehavior lickBehavior, WheelRotationBehavior wheelRotationBehavior, GameObject uiPanel)
          : base("IBL Task")
@@ -248,10 +250,10 @@ public class IBLTask : Experiment
 
     // ** HELPER FUNCTIONS **
 
-    public override void SetLevel(int level)
-    {
-        this.level = level;
-    }
+    //public override void SetLevel(int level)
+    //{
+    //    this.level = level;
+    //}
 
     private void NextState()
     {
@@ -356,5 +358,15 @@ public class IBLTask : Experiment
     public override float TaskTime()
     {
         return sessionCurrentTime;
+    }
+
+    public override void ChangeTimescale()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SetTaskTime(float newTime)
+    {
+        throw new NotImplementedException();
     }
 }

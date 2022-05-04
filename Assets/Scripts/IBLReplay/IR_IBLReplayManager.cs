@@ -9,6 +9,7 @@ public class IR_IBLReplayManager : MonoBehaviour
 {
     [SerializeField] Networking networking;
     [SerializeField] Utils util;
+    [SerializeField] ExperimentManager emanager;
 
     // Probes
     [SerializeField] GameObject iblReplayProbesGO;
@@ -30,6 +31,7 @@ public class IR_IBLReplayManager : MonoBehaviour
     // Sessions
     string[] sessions;
     Dictionary<string, IR_ReplaySession> loadedSessions;
+    IR_IBLReplayTask activeTask;
     IR_ReplaySession activeSession;
 
     private void Awake()

@@ -68,10 +68,10 @@ public class IR_IBLReplayTask : Experiment
     const float scale = 1000;
     private SpikingComponent spikedComponent;
 
-    public IR_IBLReplayTask(Utils util, GameObject UIPanel, Transform wheelTransform, 
+    public IR_IBLReplayTask(Utils util, Transform wheelTransform, 
         AudioManager audmanager, LickBehavior lickBehavior, 
         VisualStimulusManager vsmanager, NeuronEntityManager nemanager,
-        List<Transform> probeTips) 
+        List<Transform> probeTips) : base("replay")
     {
         this.util = util;
         this.wheelTransform = wheelTransform;
@@ -81,19 +81,12 @@ public class IR_IBLReplayTask : Experiment
         this.nemanager = nemanager;
         this.tips = probeTips;
 
-        _uiPanel = UIPanel;
-
         // Setup variables
-        waitingForData = new List<string>();
         emanager = GameObject.Find("main").GetComponent<ExperimentManager>();
         spikedComponent = new SpikingComponent { spiking = 1f };
-        GameObject replayPanel = GameObject.Find("ReplayCamerasPanel");
-        if (replayPanel)
-            videos = replayPanel.GetComponentsInChildren<VideoPlayer>();
 
         // Setup task info
         LoadTaskInfo();
-
         
         // Populate panel
         List<TMP_Dropdown.OptionData> eids = new List<TMP_Dropdown.OptionData>();
@@ -111,6 +104,25 @@ public class IR_IBLReplayTask : Experiment
 
     }
 
+    public void UpdateTime()
+    {
+        float seconds = TaskTime();
+
+        float displayMilliseconds = (seconds % 1) * 1000;
+        float displaySeconds = seconds % 60;
+        float displayMinutes = (seconds / 60) % 60;
+        float displayHours = (seconds / 3600) % 24;
+
+        //private void UpdateTime()
+        //{
+        //    TimeSpan timeSpan = TimeSpan.FromSeconds(sessionCurrentTime);
+        //    string timeText = string.Format("{0:D2}h.{1:D2}m.{2:D2}.{3:D3}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+        //    timerText.SetText(timeText);
+        //}
+        GameObject replayText = GameObject.Find("Replay_Time");
+        if (replayText)
+            replayText.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}h:{1:00}m:{2:00}.{3:000}", displayHours, displayMinutes, displaySeconds, displayMilliseconds);
+    }
 
     // Load task info sets everything up
     private void LoadTaskInfo()
@@ -293,26 +305,26 @@ public class IR_IBLReplayTask : Experiment
         dataLoaded = true;
     }
 
-    //public override float TaskTime()
-    //{
-    //    return taskTime;
-    //}
+    public override float TaskTime()
+    {
+        return taskTime;
+    }
 
-    //public override void RunTask()
-    //{
-    //    SetTaskRunning(true);
-    //}
-    //public override void PauseTask()
-    //{
-    //    Debug.LogWarning("Pause not implemented, currently stops task");
-    //    StopTask();
-    //}
+    public override void RunTask()
+    {
+        SetTaskRunning(true);
+    }
+    public override void PauseTask()
+    {
+        Debug.LogWarning("Pause not implemented, currently stops task");
+        StopTask();
+    }
 
-    //public override void StopTask()
-    //{
-    //    ClearVisualProbes();
-    //    SetTaskRunning(false);
-    //}
+    public override void StopTask()
+    {
+        ClearVisualProbes();
+        SetTaskRunning(false);
+    }
 
     public override void TaskUpdate()
     {
@@ -342,6 +354,7 @@ public class IR_IBLReplayTask : Experiment
 
                 // Play the current spikes
                 taskTime += Time.deltaTime;
+                UpdateTime();
 
                 int spikesThisFrame = 0;
                 foreach (int probe in probes)
@@ -482,26 +495,6 @@ public class IR_IBLReplayTask : Experiment
     }
 
     public override void LoadTask()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void RunTask()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void PauseTask()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void StopTask()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override float TaskTime()
     {
         throw new NotImplementedException();
     }
