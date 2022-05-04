@@ -4239,7 +4239,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1036566694}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ExperimentManager, Assembly-CSharp
         m_MethodName: Pause
         m_Mode: 1
@@ -6802,7 +6802,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1036566694}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ExperimentManager, Assembly-CSharp
         m_MethodName: SlowDown
         m_Mode: 1
@@ -8573,7 +8573,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1036566694}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ExperimentManager, Assembly-CSharp
         m_MethodName: Reset
         m_Mode: 1
@@ -10511,7 +10511,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1036566694}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ExperimentManager, Assembly-CSharp
         m_MethodName: Play
         m_Mode: 1
@@ -11626,7 +11626,6 @@ GameObject:
   - component: {fileID: 1036566687}
   - component: {fileID: 1036566692}
   - component: {fileID: 1036566688}
-  - component: {fileID: 1036566694}
   - component: {fileID: 1036566696}
   - component: {fileID: 1036566693}
   - component: {fileID: 1036566697}
@@ -11868,33 +11867,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1036566694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1036566685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15f7ee38558d9f7489553c9110cc96df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vsmanager: {fileID: 1036566688}
-  audmanager: {fileID: 1036566696}
-  util: {fileID: 1036566697}
-  elecmanager: {fileID: 2109663387496678654}
-  nemanager: {fileID: 1036566700}
-  lickBehavior: {fileID: 713980113}
-  wheelRotationBehavior: {fileID: 713980110}
-  mouseAI: {fileID: 713980112}
-  run: {fileID: 944622027}
-  pause: {fileID: 282420433}
-  stop: {fileID: 730102971}
-  experimentChooser: {fileID: 0}
-  iblTaskUIPanel: {fileID: 0}
-  iblReplayProbesGO: {fileID: 851412130}
-  iblReplayTaskUIPanel: {fileID: 0}
 --- !u!224 &1036566695
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11958,7 +11930,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networking: {fileID: 1036566692}
   util: {fileID: 1036566697}
-  replayControls: {fileID: 1910193050}
+  emanager: {fileID: 0}
+  iblReplayProbesGO: {fileID: 0}
   sessionDropdown: {fileID: 1626126477}
   leftPlayer: {fileID: 1596222717}
   bodyPlayer: {fileID: 1596222717}
@@ -11984,7 +11957,7 @@ MonoBehaviour:
   elecmanager: {fileID: 2109663387496678654}
   ccfmodelcontrol: {fileID: 1036566686}
   neuronRoot: {fileID: 408216869}
-  neuronMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  neuronMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 3}
   neuronMaterial: {fileID: 2100000, guid: 42cc96581f509d543a1b29009a159442, type: 2}
   replayScale: 0.1
   neuronScale: 0.03
@@ -19348,7 +19321,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1036566694}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ExperimentManager, Assembly-CSharp
         m_MethodName: SpeedUp
         m_Mode: 1
