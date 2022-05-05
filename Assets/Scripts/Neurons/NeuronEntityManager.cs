@@ -417,7 +417,7 @@ public class NeuronEntityManager : MonoBehaviour
             return returnList;
         }
 
-    public List<Entity> AddNeurons(List<float3> mlapdv, List<IBLEventAverageComponent> eventAverage, List<float4> zeroColorVals, List<float4> maxColorVals)
+    public List<Entity> AddNeurons(List<float3> mlapdv, List<IBLEventAverageComponent> eventAverage, float4[] zeroColorVals, float4[] maxColorVals)
     {
         EntityArchetype neuronArchetype = eManager.CreateArchetype(
             typeof(Translation),

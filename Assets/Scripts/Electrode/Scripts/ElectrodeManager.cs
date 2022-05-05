@@ -14,6 +14,7 @@ public class ElectrodeManager : NetworkBehaviour
     [SerializeField] private Utils util;
     [SerializeField] private NeuronEntityManager nemanager;
     [SerializeField] private CCFModelControl modelControl;
+    [SerializeField] private VolumeDatasetManager vdmanager;
 
     [SerializeField] private bool networkOverride;
 
@@ -25,12 +26,6 @@ public class ElectrodeManager : NetworkBehaviour
     private Dictionary<string, NeuronDataset> neuronDatasets;
     private AnnotationDataset annotationDataset;
 
-    // this file stores the indexes that we actually have data for
-    private string datasetIndexFile = "data_indexes";
-    private byte[] ccfIndexMap;
-
-    // annotation files
-    private string annotationIndexFile = "ann/indexes";
     // rf files
     private string x_rfIndexFile = "rf/x_rf_index";
     private string y_rfIndexFile = "rf/y_rf_index";
@@ -323,31 +318,32 @@ public class ElectrodeManager : NetworkBehaviour
     }
 
     // ** DATASET FUNCTIONALITY ** //
-    public void LoadAllDatasets()
+    public async void LoadAllDatasets()
     {
         if (!IsServer && !networkOverride) return;
 
         neuronDatasets = new Dictionary<string, NeuronDataset>();
 
         // First load the indexing file
-        Debug.Log("Loading the CCF index file");
-        ccfIndexMap = util.LoadBinaryByteHelper(datasetIndexFile);
+        //Debug.Log("Loading the CCF index file");
+        //ccfIndexMap = util.LoadBinaryByteHelper(datasetIndexFile);
 
         // Load the annotation file
-        Debug.Log("Loading the CCF annotation index and map files");
-        ushort[] annData = util.LoadBinaryUShortHelper(annotationIndexFile);
-        uint[] annMap = util.LoadBinaryUInt32Helper(annotationIndexFile + "_map");
-        Debug.Log("Creating the CCF AnnotationDataset object");
-        annotationDataset = new AnnotationDataset(new int[] {528, 320, 456}, annData, annMap, ccfIndexMap);
+        //Debug.Log("Loading the CCF annotation index and map files");
+        //ushort[] annData = util.LoadBinaryUShortHelper(annotationIndexFile);
+        //uint[] annMap = util.LoadBinaryUInt32Helper(annotationIndexFile + "_map");
+        //Debug.Log("Creating the CCF AnnotationDataset object");
+        //annotationDataset = new AnnotationDataset(new int[] {528, 320, 456}, annData, annMap, ccfIndexMap);
+
 
         // Load the RF data
-        Debug.Log("Loading the X/Y reference data");
-        byte[] xData = util.LoadBinaryByteHelper(x_rfIndexFile);
-        float[] xMap = LoadCSVHelper(x_rfIndexFile + "_map");
-        neuronDatasets.Add("rf_x", new NeuronDataset(xData, xMap, ccfSize, ccfIndexMap));
-        byte[] yData = util.LoadBinaryByteHelper(y_rfIndexFile);
-        float[] yMap = LoadCSVHelper(y_rfIndexFile + "_map");
-        neuronDatasets.Add("rf_y", new NeuronDataset(yData, yMap, ccfSize, ccfIndexMap));
+        //Debug.Log("Loading the X/Y reference data");
+        //byte[] xData = util.LoadBinaryByteHelper(x_rfIndexFile);
+        //float[] xMap = LoadCSVHelper(x_rfIndexFile + "_map");
+        //neuronDatasets.Add("rf_x", new NeuronDataset(xData, xMap, ccfSize, ccfIndexMap));
+        //byte[] yData = util.LoadBinaryByteHelper(y_rfIndexFile);
+        //float[] yMap = LoadCSVHelper(y_rfIndexFile + "_map");
+        //neuronDatasets.Add("rf_y", new NeuronDataset(yData, yMap, ccfSize, ccfIndexMap));
     }
 
     private float[] LoadCSVHelper(string fileName)

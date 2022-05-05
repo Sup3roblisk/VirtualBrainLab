@@ -32,7 +32,6 @@ public partial class IBLEventAverageSystem : SystemBase
         int curIndex = iblTask.GetTimeIndex();
         float smallScale = nemanager.GetNeuronScale();
 
-        Debug.Log(curIndex);
         int trialStartIdx;
         if (iblTask.GetSide() == -1)
         {
@@ -44,9 +43,6 @@ public partial class IBLEventAverageSystem : SystemBase
         }
         curIndex += trialStartIdx;
 
-        //int trialTimeIdx = trialStartIdx + iblTask.GetTimeIndex();
-
-        double max = 0.0;
         // Update spiking neurons
         Entities
             .ForEach((ref Scale scale, ref MaterialColor color, ref SpikingComponent spikeComp, ref SpikingRandomComponent randComp, in IBLEventAverageComponent eventAverage) =>
@@ -65,16 +61,16 @@ public partial class IBLEventAverageSystem : SystemBase
 
         // Update lerping neurons
         Entities
-            .ForEach((ref MaterialColor color, ref LerpColorComponent lerpColor, in IBLEventAverageComponent eventAverage) =>
+            .ForEach((ref Scale scale, ref MaterialColor color, in LerpColorComponent lerpColor, in IBLEventAverageComponent eventAverage) =>
             {
                 float4 maxFRColor = lerpColor.maxColor;
                 float4 zeroFRColor = lerpColor.zeroColor;
-                float curPercent = eventAverage.spikeRate[curIndex] / 100.0f;
+                float curPercent = eventAverage.spikeRate[curIndex] / 125f;
                 color.Value = new float4(Mathf.Lerp(zeroFRColor.x, maxFRColor.x, curPercent),
                                          Mathf.Lerp(zeroFRColor.y, maxFRColor.y, curPercent),
                                          Mathf.Lerp(zeroFRColor.z, maxFRColor.z, curPercent),
                                          Mathf.Lerp(zeroFRColor.w, maxFRColor.w, curPercent));
-
+                scale.Value = 0.01f + curPercent * 0.08f;
             }).ScheduleParallel(); // .Run();
     }
 }

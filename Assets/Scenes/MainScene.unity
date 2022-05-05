@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44994467, g: 0.5000024, b: 0.57554656, a: 1}
+  m_IndirectSpecularColor: {r: 0.44994545, g: 0.5000035, b: 0.57554835, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3677,7 +3677,7 @@ Transform:
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 1484876756}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: -180, z: 0}
 --- !u!1001 &178106927
 PrefabInstance:
@@ -6386,7 +6386,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1484876756}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &408241119
 GameObject:
@@ -11141,7 +11141,7 @@ Transform:
   - {fileID: 613777858}
   - {fileID: 1837319267}
   m_Father: {fileID: 1484876756}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &858149533
 GameObject:
@@ -11675,7 +11675,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 29e154cdc4333644089fccd61fe4987a, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29e154cdc4333644089fccd61fe4987a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13663,7 +13663,7 @@ MonoBehaviour:
   ontologyTogglePrefab: {fileID: 2260287975246251277, guid: 4a7d2f2444858a74e92aa6fb1a5642b1, type: 3}
   heightPerToggle: 20
   loadBerylDepth: 0
-  overrideNetwork: 0
+  overrideNetwork: 1
   brainRegionMaterials:
   - {fileID: 2100000, guid: b8a04b95bf5e0fe4dbdfd3978413393d, type: 2}
   brainRegionMaterialNames:
@@ -13957,12 +13957,31 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1036566685}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3d020b42a901e44496bba20cb29a9c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e87526a9529a5046892704c80bce5ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nemanager: {fileID: 1036566700}
+  dataIndexes:
+    m_AssetGUID: eb737450d42017848a7fc57cf086d3dd
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  annotationIndexes:
+    m_AssetGUID: 43cce19ffbc67024fae366af9eae882c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  annotationMap:
+    m_AssetGUID: ee6251661fa79af469df6e1cdc5f64b8
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  coverageIndexes:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!114 &1036566699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13978,6 +13997,7 @@ MonoBehaviour:
   elecmanager: {fileID: 2109663387496678654}
   ccfmodelcontrol: {fileID: 1036566686}
   nemanager: {fileID: 1036566700}
+  vdmanager: {fileID: 1036566698}
   util: {fileID: 1036566697}
   displayMode: byRegionFR
 --- !u!114 &1036566700
@@ -13995,12 +14015,11 @@ MonoBehaviour:
   elecmanager: {fileID: 2109663387496678654}
   ccfmodelcontrol: {fileID: 1036566686}
   neuronRoot: {fileID: 408216869}
-  neuronMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  neuronMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   neuronMaterial: {fileID: 2100000, guid: 42cc96581f509d543a1b29009a159442, type: 2}
   replayScale: 0.1
-  neuronScale: 0.03
+  neuronScale: 0.01
   util: {fileID: 1036566697}
-  debug: 0
 --- !u!1 &1040888845
 GameObject:
   m_ObjectHideFlags: 0
@@ -17417,6 +17436,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1519633352}
   - {fileID: 177044098}
   - {fileID: 408216870}
   - {fileID: 851412131}
@@ -17643,6 +17663,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f5f433c9fb9777d40a6f6a3704c361d4, type: 3}
   m_PrefabInstance: {fileID: 1514114635}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1519633351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1519633352}
+  m_Layer: 6
+  m_Name: BrainAreas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1519633352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519633351}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: 0.7071068, w: 0}
+  m_LocalPosition: {x: 5.7, y: 4, z: -6.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1484876756}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 180}
 --- !u!1 &1522737550
 GameObject:
   m_ObjectHideFlags: 0
@@ -23785,6 +23835,7 @@ MonoBehaviour:
   util: {fileID: 1036566697}
   nemanager: {fileID: 1036566700}
   modelControl: {fileID: 1036566686}
+  vdmanager: {fileID: 0}
   networkOverride: 0
 --- !u!114 &2109663387496678655
 MonoBehaviour:

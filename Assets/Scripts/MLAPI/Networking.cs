@@ -28,6 +28,8 @@ public class Networking : MonoBehaviour
             serverPanel.SetActive(false);
             // Don't load datsets on client
         }
+
+        startHost();
     }
 
     public void startServer()
@@ -73,6 +75,7 @@ public class Networking : MonoBehaviour
             node.SetNodeModelVisibility(true);
             node.GetNodeTransform().localPosition = Vector3.zero;
             node.GetNodeTransform().localRotation = Quaternion.identity;
+            node.SetNodeModelVisibility(true);
         }
         // PlayerManager has a ClientStart() function you can call here, if needed
         probeAddPanel.SetActive(true);

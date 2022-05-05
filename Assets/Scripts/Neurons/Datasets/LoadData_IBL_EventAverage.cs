@@ -11,6 +11,7 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
     [SerializeField] private ElectrodeManager elecmanager;
     [SerializeField] private CCFModelControl ccfmodelcontrol;
     [SerializeField] private NeuronEntityManager nemanager;
+    [SerializeField] private VolumeDatasetManager vdmanager;
     public Utils util;
 
     //float scale = 1000;
@@ -28,6 +29,16 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
     {
         Debug.Log("Loading Event Average Data...");
         //ParseIBLData_EventAverage();
+
+        AsyncStart();
+    }
+
+    private async void AsyncStart()
+    {
+
+        await vdmanager.LoadAnnotationDataset(new List<Action> { });
+        AnnotationDataset annotationDataset = vdmanager.GetAnnotationDataset();
+
 
         Dictionary<string, IBLEventAverageComponent> eventAverageData = new Dictionary<string, IBLEventAverageComponent>();
 
@@ -90,27 +101,28 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
                 break;
 
             case "grayscaleFR":
-                List<float4> zeroColors = new List<float4>(Enumerable.Repeat(new float4(0f, 0f, 0f, 0.15f), n));
-                List<float4> maxColors = new List<float4>(Enumerable.Repeat(new float4(1f, 1f, 1f, 1f), n));
+                float4[] zeroColors = (float4[]) Enumerable.Repeat(new float4(0f, 0f, 0f, 0f), n);
+                float4[] maxColors = (float4[]) Enumerable.Repeat(new float4(1f, 1f, 1f, 1f), n);
                 nemanager.AddNeurons(iblPos, eventAverageComponents, zeroColors, maxColors);
                 break;
 
             case "byRegionFR":
-                List<float4> zeroRegionColors = new List<float4>();
-                List<float4> maxRegionColors = new List<float4>();
-                foreach (float3 pos in iblPos)
+                float4[] zeroRegionColors = new float4[n];
+                float4[] maxRegionColors = new float4[n];
+                for (int i = 0; i < n; i++)
                 {
-                    Debug.Log(pos.x);
-                    Debug.Log((int)Math.Round(pos.x * 1000, 0));
-                    Debug.Log(pos);
+                    float3 pos = iblPos[i];
+                    //Debug.Log(pos.x);
+                    //Debug.Log((int)Math.Round(pos.x * 1000, 0));
+                    //Debug.Log(pos);
                     // May have to convert from mlapdv -> apdvml, but let's test first
                     Debug.Log(elecmanager);
-                    int posId = elecmanager.GetAnnotation((int)Math.Round(pos.y * 1000 / 25, 0),
+                    int posId = annotationDataset.ValueAtIndex((int)Math.Round(pos.y * 1000 / 25, 0),
                                                           (int)Math.Round(pos.z * 1000 / 25, 0),
                                                           (int)Math.Round(pos.x * 1000 / 25, 0));
                     Color posColor = ccfmodelcontrol.GetCCFAreaColor(posId);
-                    zeroRegionColors.Add(new float4(posColor.r, posColor.b, posColor.g, 0.15f));
-                    maxRegionColors.Add(new float4(posColor.r, posColor.b, posColor.g, 1f));
+                    zeroRegionColors[i] = new float4(posColor.r, posColor.b, posColor.g, 0f);
+                    maxRegionColors[i] = new float4(posColor.r, posColor.b, posColor.g, 1f);
                 }
                 nemanager.AddNeurons(iblPos, eventAverageComponents, zeroRegionColors, maxRegionColors);
                 break;
