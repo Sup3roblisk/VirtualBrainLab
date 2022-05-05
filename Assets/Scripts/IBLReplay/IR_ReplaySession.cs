@@ -21,7 +21,7 @@ public class IR_ReplaySession
     // SESSION DATA
     private static string[] dataTypes = { "spikes.times", "spikes.clusters", "wheel.position",
         "wheel.timestamps", "goCue_times", "feedback_times", "feedbackType",
-        "contrastLeft","contrastRight","lick.times"};
+        "contrastLeft","contrastRight","licks.times"};
     TaskCompletionSource<bool> taskLoadedSource;
 
     private List<string> waitingForData;
@@ -31,6 +31,9 @@ public class IR_ReplaySession
     private Dictionary<int, List<Vector3>> coords;
     private Dictionary<string, float> videoTimes;
     private Dictionary<int, Vector3[]> trajectories;
+
+    private Vector3[] paw3DL;
+    private Vector3[] paw3DR;
 
     // TIME DATA
     private float[] quantiles = { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
@@ -67,6 +70,27 @@ public class IR_ReplaySession
     public List<string> GetPIDs()
     {
         return pids;
+    }
+
+    /// <summary>
+    /// Load all assets for the session, this includes:
+    /// data files that need to be downloaded from flatiron 
+    /// cluster mlapdv coordinate data
+    /// videos
+    /// </summary>
+    /// <returns></returns>
+    public async Task<bool> LoadAssets()
+    {
+        Debug.Log("Asset load started for session");
+        replayManager.SetLoading(true);
+
+        // You have to load the file URLs first, since we need to have information about the probe count before we go on
+        await LoadFileURLs();
+        // Then you can simul-load all the cluster/traj/video data
+        await Task.WhenAll(new Task[] { LoadClusters(), LoadVideos(), LoadTrajectoryData(), Load3DPaw() });
+
+        replayManager.SetLoading(false);
+        return true;
     }
 
     /// <summary>
@@ -117,27 +141,6 @@ public class IR_ReplaySession
     public Vector3[] GetProbeTrajectory(int probe)
     {
         return trajectories[probe];
-    }
-
-    /// <summary>
-    /// Load all assets for the session, this includes:
-    /// data files that need to be downloaded from flatiron 
-    /// cluster mlapdv coordinate data
-    /// videos
-    /// </summary>
-    /// <returns></returns>
-    public async Task<bool> LoadAssets()
-    {
-        Debug.Log("Asset load started for session");
-        replayManager.SetLoading(true);
-
-        // You have to load the file URLs first, since we need to have information about the probe count before we go on
-        await LoadFileURLs(); 
-        // Then you can simul-load all the cluster/traj/video data
-        await Task.WhenAll(new Task[] { LoadClusters(), LoadVideos(), LoadTrajectoryData() });
-
-        replayManager.SetLoading(false);
-        return true;
     }
 
     private async Task<bool> LoadTrajectoryData()
@@ -355,4 +358,58 @@ public class IR_ReplaySession
         return true;
     }
 
+    private async Task<bool> Load3DPaw()
+    {
+        string fname_l = replayManager.GetAssetPrefix() + "Videos/points3d_l.csv";
+        Debug.Log("loading: " + fname_l);
+        AsyncOperationHandle<TextAsset> leftPawLoader = Addressables.LoadAssetAsync<TextAsset>(fname_l);
+        leftPawLoader.Completed += handle => { ParsePawCoordinates(true, handle.Result); };
+
+        string fname_r = replayManager.GetAssetPrefix() + "Videos/points3d_r.csv";
+        Debug.Log("loading: " + fname_r);
+        AsyncOperationHandle<TextAsset> rightPawLoader = Addressables.LoadAssetAsync<TextAsset>(fname_r);
+        rightPawLoader.Completed += handle => { ParsePawCoordinates(false, handle.Result); };
+
+        await Task.WhenAll(new Task[] { leftPawLoader.Task, rightPawLoader.Task });
+
+        return true;
+    }
+
+    private void ParsePawCoordinates(bool left, TextAsset text)
+    {
+        List<Dictionary<string, object>> pawData = CSVReader.ParseText(text.text);
+        if (left)
+            paw3DL = new Vector3[pawData.Count];
+        else
+            paw3DR = new Vector3[pawData.Count];
+
+        for (int i = 0; i < pawData.Count; i++)
+        {
+            Dictionary<string, object> row = pawData[i];
+
+            float x = (float)row["x"];
+            float y = (float)row["y"];
+            float z = (float)row["z"];
+
+            if (left)
+                paw3DL[i] = new Vector3(x, y, z);
+            else
+                paw3DR[i] = new Vector3(x, y, z);
+        }
+
+        if (left)
+            Debug.Log("Loaded " + paw3DL.Length + " points for left");
+        else
+            Debug.Log("Loaded " + paw3DR.Length + " points for right");
+    }
+
+    public Vector3 GetPaw(int index, bool left)
+    {
+        if (index < 0)
+            return Vector3.zero;
+        if (left)
+            return paw3DL[index];
+        else
+            return paw3DR[index];
+    }
 }

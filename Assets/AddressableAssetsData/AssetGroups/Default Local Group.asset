@@ -21,6 +21,14 @@ MonoBehaviour:
     m_Address: Assets/AddressableAssets/flatiron_info.txt
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: bf9bce6bc55adac4db337c731873816b
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/points3d_l.csv
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 36b13fb3fefacfb41aa06937a472a963
+    m_Address: Assets/AddressableAssets/IBLSessions/Videos/points3d_r.csv
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9fc1257868a6ce1488968c72223134bd, type: 2}
   m_SchemaSet:
