@@ -62,6 +62,7 @@ Assets/Resources/*
 Assets/AddressableAssets/**/*.bytes
 Assets/AddressableAssets/**/*.csv
 Assets/AddressableAssets/**/*.obj
+Assets/AdressableAssets/**/*.meta
 Assets/AddressableAssets/**/*.mp4
 Assets/AddressableAssets/**/*.txt
 Assets/AddressableAssets.zip
