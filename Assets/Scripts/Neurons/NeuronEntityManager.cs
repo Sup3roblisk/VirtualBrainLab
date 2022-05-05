@@ -67,38 +67,30 @@ public class NeuronEntityManager : MonoBehaviour
 
     private void Start()
     {
-<<<<<<< HEAD
-        /*List<float3> test = new List<float3>();
-        test.Add(new float3(0f, 0f, 0f));
-        AddNeurons(test);*/
         _currentMaxFiringRate = 100f;
-=======
-        _currentMaxFiringRate = 50f;
->>>>>>> 62c1272b1057886b582709c6016b10b38544fc96
     }
 
     private void Debug()
     {
-<<<<<<< HEAD
         // NOTE: This loop will throw an error if there are any neurons without spiking components
         // (e.g. when we're lerping)
-        if (debug)
-=======
-        List<float3> debugPos = new List<float3>();
-
-        for (int x = -5; x < 5; x++)
->>>>>>> 62c1272b1057886b582709c6016b10b38544fc96
+        /*if (debug)
         {
-            for (int y = -5; y < 5; y++)
+            List<float3> debugPos = new List<float3>();
+
+            for (int x = -5; x < 5; x++)
             {
-                for (int z = -5; z < 5; z++)
+                for (int y = -5; y < 5; y++)
                 {
-                    debugPos.Add(new float3(x, y, z));
+                    for (int z = -5; z < 5; z++)
+                    {
+                        debugPos.Add(new float3(x, y, z));
+                    }
                 }
             }
-        }
 
-        AddNeurons(debugPos);
+            AddNeurons(debugPos);
+        }*/
     }
 
     public bool UseScaleForSpiking()
