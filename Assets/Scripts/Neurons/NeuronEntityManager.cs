@@ -30,7 +30,6 @@ public class NeuronEntityManager : MonoBehaviour
     [SerializeField] private float replayScale = 0.125f;
     [SerializeField] private float neuronScale = 0.075f;
     [SerializeField] private Utils util;
-    private float _currentNeuronMaxSpikeRate;
 
     // Debug
     [SerializeField] private bool debug;
@@ -318,8 +317,6 @@ public class NeuronEntityManager : MonoBehaviour
             eManager.SetComponentData(neuron, new Scale { Value = replayScale });
             eManager.SetComponentData(neuron, new MaterialColor { Value = util.Color2float4(data[i]) });
             eManager.SetSharedComponentData(neuron, neuronRenderMesh);
-
-            // Add the simulated neuron component
 
             neurons.Add(neuron);
             returnList.Add(neuron);

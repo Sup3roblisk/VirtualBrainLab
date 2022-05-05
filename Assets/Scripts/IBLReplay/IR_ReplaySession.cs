@@ -40,6 +40,7 @@ public class IR_ReplaySession
 
     public IR_ReplaySession(string eid, IR_IBLReplayManager replayManager, Utils util)
     {
+        Debug.Log("New session data object created");
         this.eid = eid;
         this.replayManager = replayManager;
         this.util = util;
@@ -55,41 +56,17 @@ public class IR_ReplaySession
         quantileTimes = new Dictionary<int, float[]>();
         maxTime = new Dictionary<int, float>();
 
-        LoadTrajectoryData();
+        trajectories = new Dictionary<int, Vector3[]>();
     }
 
-    private async void LoadTrajectoryData()
+    public string GetEID()
     {
-        // Load the probe trajectory CSV
-        string filename = replayManager.GetAssetPrefix() + "probe_trajectories.csv";
-        AsyncOperationHandle<TextAsset> trajLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
-        await trajLoader.Task;
+        return eid;
+    }
 
-        List<Dictionary<string, object>> trajectoryCSVdata = CSVReader.ParseText(trajLoader.Result.text);
-
-        for (int i = 0; i < trajectoryCSVdata.Count; i++)
-        {
-            Dictionary<string, object> row = trajectoryCSVdata[i];
-
-            string cEid = (string)row["eid"];
-
-            if (eid == cEid)
-            {
-                int probe = (int)char.GetNumericValue(((string)row["probe"])[6]);
-
-                float ml = Convert.ToSingle(row["ml"]);
-                float ap = Convert.ToSingle(row["ap"]);
-                float dv = Convert.ToSingle(row["dv"]);
-                float depth = Convert.ToSingle(row["depth"]);
-                float theta = Convert.ToSingle(row["theta"]);
-                float phi = Convert.ToSingle(row["phi"]);
-
-                Vector3 mlapdv = new Vector3(ml, ap, dv);
-                Vector3 dtp = new Vector3(depth, theta, phi);
-
-                trajectories.Add(probe, new Vector3[] { mlapdv, dtp });
-            }
-        }
+    public List<string> GetPIDs()
+    {
+        return pids;
     }
 
     /// <summary>
@@ -142,19 +119,74 @@ public class IR_ReplaySession
         return trajectories[probe];
     }
 
+    /// <summary>
+    /// Load all assets for the session, this includes:
+    /// data files that need to be downloaded from flatiron 
+    /// cluster mlapdv coordinate data
+    /// videos
+    /// </summary>
+    /// <returns></returns>
     public async Task<bool> LoadAssets()
     {
-        await LoadFileURLs();
-        await LoadClusters();
-        await LoadVideos();
+        Debug.Log("Asset load started for session");
+        replayManager.SetLoading(true);
 
+        // You have to load the file URLs first, since we need to have information about the probe count before we go on
+        await LoadFileURLs(); 
+        // Then you can simul-load all the cluster/traj/video data
+        await Task.WhenAll(new Task[] { LoadClusters(), LoadVideos(), LoadTrajectoryData() });
+
+        replayManager.SetLoading(false);
         return true;
     }
 
-    private async Task<bool> LoadFileURLs()
+    private async Task<bool> LoadTrajectoryData()
+    {
+        // Load the probe trajectory CSV
+        string filename = replayManager.GetAssetPrefix() + "probe_trajectories.csv";
+        AsyncOperationHandle<TextAsset> trajLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
+        await trajLoader.Task;
+
+        List<Dictionary<string, object>> trajectoryCSVdata = CSVReader.ParseText(trajLoader.Result.text);
+
+        for (int i = 0; i < trajectoryCSVdata.Count; i++)
+        {
+            Dictionary<string, object> row = trajectoryCSVdata[i];
+
+            string cEid = (string)row["eid"];
+
+            if (eid == cEid)
+            {
+                int probe = (int)char.GetNumericValue(((string)row["probe"])[6]);
+
+                float ml = Convert.ToSingle(row["ml"]);
+                float ap = Convert.ToSingle(row["ap"]);
+                float dv = Convert.ToSingle(row["dv"]);
+                float depth = Convert.ToSingle(row["depth"]);
+                float theta = Convert.ToSingle(row["theta"]);
+                float phi = Convert.ToSingle(row["phi"]);
+
+                Vector3 mlapdv = new Vector3(ml, ap, dv);
+                Vector3 dtp = new Vector3(depth, theta, phi);
+
+                trajectories.Add(probe, new Vector3[] { mlapdv, dtp });
+            }
+        }
+        return true;
+    }
+
+    private Task LoadFileURLs()
     {
         taskLoadedSource = new TaskCompletionSource<bool>();
+        Task filesLoadedTask = taskLoadedSource.Task;
 
+        LoadFileURLs_helper();
+
+        return filesLoadedTask;
+    }
+
+    private async void LoadFileURLs_helper()
+    {
         string[] probeOpts = { "probe00", "probe01" };
         foreach (string probeOpt in probeOpts)
         {
@@ -180,8 +212,6 @@ public class IR_ReplaySession
             util.LoadFlatIronData(dataType, URIs[dataType], AddSessionData);
             waitingForData.Add(dataType);
         }
-
-        return true;
     }
 
     private void AddSessionData(string type, Array receivedData)
@@ -270,11 +300,13 @@ public class IR_ReplaySession
         Task<TextAsset>[] loaders = new Task<TextAsset>[pids.Count];
         for (int i = 0; i < pids.Count; i++)
         {
+            int pi = i;
             string pid = pids[i];
+            Debug.Log("Loading cluster data for " + pid);
 
             string filename = replayManager.GetAssetPrefix() + "Clusters/" + pid + ".csv";
             AsyncOperationHandle<TextAsset> clusterLoader = Addressables.LoadAssetAsync<TextAsset>(filename);
-            clusterLoader.Completed += handle => { ParseClusterCoordinates(i, handle.Result); };
+            clusterLoader.Completed += handle => { ParseClusterCoordinates(pi, handle.Result); };
 
             loaders[i] = clusterLoader.Task;
         }
@@ -292,8 +324,9 @@ public class IR_ReplaySession
         for (int i = 0; i < data.Count; i++)
         {
             Dictionary<string, object> row = data[i];
-            pidCoords.Add(new Vector3((float)row["ml"], (float)row["ap"], (float)row["dv"]));
+            pidCoords.Add(new Vector3((float)row["ml"]/1000f, (float)row["ap"] / 1000f, (float)row["dv"] / 1000f));
         }
+        Debug.Log("Loaded: " + pidCoords.Count + " neurons for probe: " + pid);
         coords.Add(pid, pidCoords);
     }
 

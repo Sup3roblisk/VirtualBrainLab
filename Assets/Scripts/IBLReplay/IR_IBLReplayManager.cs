@@ -8,9 +8,17 @@ using UnityEngine.Video;
 
 public class IR_IBLReplayManager : MonoBehaviour
 {
-    [SerializeField] Networking networking;
+    [SerializeField] CCFModelControl modelControl;
     [SerializeField] Utils util;
-    [SerializeField] ExperimentManager emanager;
+
+    // Gameobjects
+    [SerializeField] Transform wheelTransform;
+    [SerializeField] AudioManager audmanager;
+    [SerializeField] LickBehavior lickBehavior;
+    [SerializeField] VisualStimulusManager vsmanager;
+    [SerializeField] NeuronEntityManager nemanager;
+
+    [SerializeField] GameObject loadingGO;
 
     // Probes
     [SerializeField] GameObject iblReplayProbesGO;
@@ -54,6 +62,13 @@ public class IR_IBLReplayManager : MonoBehaviour
             tips = new List<Transform>();
             tips.Add(p0tip); tips.Add(p1tip);
         }
+
+        activeTask = new IR_IBLReplayTask(util, wheelTransform, audmanager, lickBehavior, vsmanager, nemanager, tips);
+    }
+
+    public void SetLoading(bool state)
+    {
+        loadingGO.SetActive(state);
     }
 
     public string GetAssetPrefix()
@@ -72,7 +87,6 @@ public class IR_IBLReplayManager : MonoBehaviour
         // Populate the dropdown menu with the sessions
         sessionDropdown.AddOptions(new List<string> { "" }); // add a blank option
         sessionDropdown.AddOptions(new List<string>(sessions));
-
     }
 
     public void ChangeSession(int newSessionID)
@@ -85,8 +99,19 @@ public class IR_IBLReplayManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        networking.startHost();
+        modelControl.LateStart(true);
+        SetupCCFModels();
+    }
 
+    public async void SetupCCFModels()
+    {
+        await modelControl.GetDefaultLoaded();
+        foreach (CCFTreeNode node in modelControl.GetDefaultLoadedNodes())
+        {
+            node.GetNodeTransform().localPosition = Vector3.zero;
+            node.GetNodeTransform().localRotation = Quaternion.identity;
+            node.SetNodeModelVisibility(true);
+        }
     }
 
     public async void LoadSession(string eid)
@@ -98,10 +123,12 @@ public class IR_IBLReplayManager : MonoBehaviour
             activeSession = loadedSessions[eid];
         else
         {
+            Debug.Log("Loading new session data");
             IR_ReplaySession session = new IR_ReplaySession(eid, this, util);
-            loadedSessions.Add(eid, session);
 
             await session.LoadAssets();
+
+            loadedSessions.Add(eid, session);
 
             activeSession = session;
             activeTask.SetSession(activeSession);
