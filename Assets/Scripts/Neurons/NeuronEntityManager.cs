@@ -61,17 +61,23 @@ public class NeuronEntityManager : MonoBehaviour
             castShadows = UnityEngine.Rendering.ShadowCastingMode.Off,
             mesh = neuronMesh,
             material = neuronMaterial,
-            layer = 11
+            layer = 11,
+            layerMask = 11
         };
     }
 
     private void Start()
     {
+        /*List<float3> test = new List<float3>();
+        test.Add(new float3(0f, 0f, 0f));
+        AddNeurons(test);*/
         _currentMaxFiringRate = 100f;
     }
 
     private void Update()
     {
+        // NOTE: This loop will throw an error if there are any neurons without spiking components
+        // (e.g. when we're lerping)
         if (debug)
         {
             foreach (Entity neuron in neurons)
@@ -398,6 +404,42 @@ public class NeuronEntityManager : MonoBehaviour
             newNeurons.Dispose();
             return returnList;
         }
+
+    public List<Entity> AddNeurons(List<float3> mlapdv, List<IBLEventAverageComponent> eventAverage, List<float4> zeroColorVals, List<float4> maxColorVals)
+    {
+        EntityArchetype neuronArchetype = eManager.CreateArchetype(
+            typeof(Translation),
+            typeof(Scale),
+            typeof(LocalToWorld),
+            typeof(RenderMesh),
+            typeof(RenderBounds),
+            typeof(MaterialColor),
+            typeof(LerpColorComponent),
+            typeof(IBLEventAverageComponent)
+            );
+
+        int n = mlapdv.Count;
+
+        NativeArray<Entity> newNeurons = eManager.CreateEntity(neuronArchetype, n, Allocator.Temp);
+        List<Entity> returnList = new List<Entity>();
+
+        for (int i = 0; i < n; i++)
+        {
+            Entity neuron = newNeurons[i];
+            eManager.SetComponentData(neuron, new Translation { Value = CCF2Transform(mlapdv[i]) });
+            eManager.SetComponentData(neuron, new Scale { Value = neuronScale });
+            eManager.SetSharedComponentData(neuron, neuronRenderMesh);
+
+            eManager.SetComponentData(neuron, eventAverage[i]);
+            eManager.SetComponentData(neuron, new LerpColorComponent { zeroColor = zeroColorVals[i], maxColor = maxColorVals[i]} );
+
+            neurons.Add(neuron);
+            returnList.Add(neuron);
+        }
+
+        newNeurons.Dispose();
+        return returnList;
+    }
 
     private SpikingRandomComponent NewSpikingRandomComponent()
     {

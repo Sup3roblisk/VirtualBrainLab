@@ -13900,9 +13900,7 @@ MonoBehaviour:
   pause: {fileID: 282420433}
   stop: {fileID: 730102971}
   experimentChooser: {fileID: 2077488112}
-  iblTaskUIPanel: {fileID: 1375718891}
-  iblReplayProbesGO: {fileID: 851412130}
-  iblReplayTaskUIPanel: {fileID: 0}
+  UIPanel: {fileID: 0}
 --- !u!224 &1036566695
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13947,6 +13945,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13968967245d3674eb77f631223a57f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flatironInfoAsset:
+    m_AssetGUID: f55f0fb73aa72cd49a32e9f080dbd0ff
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!114 &1036566698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13972,8 +13975,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f138b45a35c68f742952782cea3aa89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elecmanager: {fileID: 2109663387496678654}
+  ccfmodelcontrol: {fileID: 1036566686}
   nemanager: {fileID: 1036566700}
   util: {fileID: 1036566697}
+  displayMode: byRegionFR
 --- !u!114 &1036566700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13994,7 +14000,7 @@ MonoBehaviour:
   replayScale: 0.1
   neuronScale: 0.03
   util: {fileID: 1036566697}
-  debug: 1
+  debug: 0
 --- !u!1 &1040888845
 GameObject:
   m_ObjectHideFlags: 0
