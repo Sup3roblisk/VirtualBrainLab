@@ -338,7 +338,7 @@ public class ElectrodeManager : NetworkBehaviour
         ushort[] annData = util.LoadBinaryUShortHelper(annotationIndexFile);
         uint[] annMap = util.LoadBinaryUInt32Helper(annotationIndexFile + "_map");
         Debug.Log("Creating the CCF AnnotationDataset object");
-        //annotationDataset = new AnnotationDataset(annData, annMap, ccfIndexMap);
+        annotationDataset = new AnnotationDataset(new int[] {528, 320, 456}, annData, annMap, ccfIndexMap);
 
         // Load the RF data
         Debug.Log("Loading the X/Y reference data");
