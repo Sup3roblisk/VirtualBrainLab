@@ -9,6 +9,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Collections;
 using UnityEngine.Video;
+using Unity.Transforms;
 
 /// <summary>
 /// IBL REPLAY TASK
@@ -24,7 +25,6 @@ public class IR_IBLReplayTask : Experiment
     private Transform wheelTransform;
     private AudioManager audmanager;
     private LickBehavior lickBehavior;
-    private ExperimentManager emanager;
     private VisualStimulusManager vsmanager;
     private NeuronEntityManager nemanager;
     private IR_IBLReplayManager replayManager;
@@ -51,27 +51,41 @@ public class IR_IBLReplayTask : Experiment
     private float rad2mm2deg = (196 / 2) / Mathf.PI * 4; // wheel circumference in mm * 4 deg / mm
     private Vector2 stimPosDeg; // .x = left, .y = right
 
+    // PAW
+    private Transform pawL;
+    private Transform pawR;
+    private float pawFPS = 60.12f;
+
     private float taskTime;
 
     // Local accessors
-    private string cEID;
     private List<int> probes;
-    private int[] si; // spike/cluster index
+    private int[] spikeIdx; // spike/cluster index
     private Vector2 wheelTime;
     private Vector2 wheelPos; // current wheel pos and next wheel pos
     private int wi; // wheel index
     private int gi; // go cue index
     private int fi; // feedback index
     private int li; // lick index
+    private int frameIdx; // video frame index
+    private int pawIdx; // paw index
+
+    // VIDEO
     private bool videoPlaying;
-    //VideoPlayer[] videos;
+    VideoPlayer[] videos;
+    private float videoFPS = 30.15f;
 
     // DATA
     IR_ReplaySession replaySessionData;
 
+    // UI
+    GameObject replayText;
+
+
     // OTHER
     const float scale = 1000;
     private SpikingComponent spikedComponent;
+    private Scale scaledComponent;
 
     public IR_IBLReplayTask(Utils util, Transform wheelTransform, 
         AudioManager audmanager, LickBehavior lickBehavior, 
@@ -87,10 +101,17 @@ public class IR_IBLReplayTask : Experiment
         this.tips = probeTips;
 
         // Setup variables
-        emanager = GameObject.Find("main").GetComponent<ExperimentManager>();
         spikedComponent = new SpikingComponent { spiking = 1f };
+        scaledComponent = new Scale { Value = 0.4f };
+
+        replayManager = GameObject.Find("main").GetComponent<IR_IBLReplayManager>();
+
+        // UI
+        replayText = GameObject.Find("Replay_Time");
 
         neuronEntities = new Dictionary<int, List<Entity>>();
+
+        (pawL, pawR) = replayManager.GetPawTransforms();
     }
 
     public void SetSession(IR_ReplaySession newSessionData)
@@ -100,7 +121,7 @@ public class IR_IBLReplayTask : Experiment
         LoadNeurons();
     }
 
-    public void UpdateTime()
+    public void UpdateTimeText()
     {
         float seconds = TaskTime();
 
@@ -109,19 +130,19 @@ public class IR_IBLReplayTask : Experiment
         float displayMinutes = (seconds / 60) % 60;
         float displayHours = (seconds / 3600) % 24;
 
-        GameObject replayText = GameObject.Find("Replay_Time");
-        if (replayText)
-            replayText.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}h:{1:00}m:{2:00}.{3:000}", displayHours, displayMinutes, displaySeconds, displayMilliseconds);
+        replayText.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}h:{1:00}m:{2:00}.{3:000}", displayHours, displayMinutes, displaySeconds, displayMilliseconds);
     }
 
     private void SetupTask()
     {
         // reset indexes
         taskTime = 0f;
+        spikeIdx = new int[] { 0, 0 };
         wi = 0;
         gi = 0;
         fi = 0;
         li = 0;
+        pawIdx = 0;
         videoPlaying = false;
 
         probes = new List<int>();
@@ -214,131 +235,127 @@ public class IR_IBLReplayTask : Experiment
 
     public override void TaskUpdate()
     {
-        if (TaskLoaded() && TaskRunning())
+        // Update time
+        taskTime += Time.deltaTime;
+        UpdateTimeText();
+
+        // Set the frame index and update the videos
+        frameIdx = (int) ((taskTime - replaySessionData.GetVideoStartTime("left")) * videoFPS);
+        replayManager.SetVideoFrame(frameIdx);
+
+        // Play the current spikes
+        int spikesThisFrame = 0;
+        foreach (int probe in probes)
         {
-            // If the video is not playing yet
-            //if (!videoPlaying)
-            //{
-            //    if (taskTime >= 8.6326566f)
-            //    {
-            //        Debug.Log("Starting videos");
-            //        foreach (VideoPlayer video in videos)
-            //        {
-            //            video.Play();
-            //        }
-            //        videoPlaying = true;
-            //    }
-            //}
-
-            // Play the current spikes
-            taskTime += Time.deltaTime;
-            UpdateTime();
-
-            int spikesThisFrame = 0;
-            foreach (int probe in probes)
-            {
-                spikesThisFrame += PlaySpikes(probe);
-            }
-
-            // TODO: setting a max of 100 is bad for areas that have high spike rates
-            // also this creates sound issues if your framerate is low
-            if (UnityEngine.Random.value < (spikesThisFrame / 100))
-            {
-                Debug.LogWarning("Spiking but emanager has no queue for spikes anymore");
-                //emanager.QueueSpike();
-            }
-
-            //// Increment the wheel index if time has passed the previous value
-            //while (taskTime >= wheelTime.y)
-            //{
-            //    wi++;
-            //    wheelTime = new Vector2((float)(double)sessionData[cEID]["wheel.timestamps"].GetValue(wi), (float)(double)sessionData[cEID]["wheel.timestamps"].GetValue(wi + 1));
-            //    wheelPos = new Vector2((float)(double)sessionData[cEID]["wheel.position"].GetValue(wi), (float)(double)sessionData[cEID]["wheel.position"].GetValue(wi + 1));
-            //    float dwheel = (wheelPos.y - wheelPos.x) * -rad2mm2deg;
-            //    stimPosDeg += new Vector2(dwheel, dwheel);
-
-            //    // Move stimuli
-            //    // Freeze stimuli if they go past zero, or off the screen
-            //    if (stimL!=null && !stimFrozen)
-            //    {
-            //        vsmanager.SetStimPositionDegrees(stimL, new Vector2(stimPosDeg.x, 0));
-            //        if (stimPosDeg.x > stimAzMinMax.x || stimPosDeg.x < -stimAzMinMax.y) { stimFrozen = true; }
-            //    }
-            //    if (stimR != null && !stimFrozen)
-            //    {
-            //        vsmanager.SetStimPositionDegrees(stimR, new Vector2(stimPosDeg.y, 0));
-            //        if (stimPosDeg.y < stimAzMinMax.x || stimPosDeg.y > stimAzMinMax.y) { stimFrozen = true; }
-            //    }
-            //}
-            //float partialTime = (taskTime - wheelTime.x) / (wheelTime.y - wheelTime.x);
-            //// note the negative, because for some reason the rotations are counter-clockwise
-            //wheelTransform.localRotation = Quaternion.Euler(-rad2deg * Mathf.Lerp(wheelPos.x, wheelPos.y, partialTime), 0, 0);
-
-            //// Check if go cue time was passed
-            //if (taskTime >= (double)sessionData[cEID]["goCue_times"].GetValue(gi))
-            //{
-            //    audmanager.PlayGoTone();
-            //    // Stimulus shown
-
-            //    // Check left or right contrast
-            //    float conL = (float)(double)sessionData[cEID]["contrastLeft"].GetValue(gi);
-            //    float conR = (float)(double)sessionData[cEID]["contrastRight"].GetValue(gi);
-            //    stimPosDeg = new Vector2(-1 * stimAz, stimAz);
-
-            //    stimFrozen = false;
-            //    // We'll do generic stimulus checks, even though the task is detection so that
-            //    // if later someone does 2-AFC we are ready
-            //    if (conL > 0)
-            //    {
-            //        Debug.Log("Adding left stimulus");
-            //        stimL = vsmanager.AddNewStimulus("gabor");
-            //        stimL.GetComponent<VisualStimulus>().SetScale(5);
-            //        // Set the position properly
-            //        vsmanager.SetStimPositionDegrees(stimL, new Vector2(stimPosDeg.x, 0));
-            //        vsmanager.SetContrast(stimL, conL);
-            //    }
-
-            //    if (conR > 0)
-            //    {
-            //        Debug.Log("Adding right stimulus");
-            //        stimR = vsmanager.AddNewStimulus("gabor");
-            //        stimR.GetComponent<VisualStimulus>().SetScale(5);
-            //        // Set the position properly
-            //        vsmanager.SetStimPositionDegrees(stimR, new Vector2(stimPosDeg.y, 0));
-            //        vsmanager.SetContrast(stimR, conR);
-            //    }
-            //    gi++;
-            //}
-
-            //// Check if feedback time was passed
-            //if (taskTime >= (double)sessionData[cEID]["feedback_times"].GetValue(fi))
-            //{
-            //    // Check type of feedback
-            //    if ((long)sessionData[cEID]["feedbackType"].GetValue(fi) == 1)
-            //    {
-            //        // Reward + lick
-            //        lickBehavior.Drop();
-            //    }
-            //    else
-            //    {
-            //        // Play white noise
-            //        audmanager.PlayWhiteNoise();
-            //    }
-            //    stimFrozen = true;
-
-            //    if (stimL != null) { vsmanager.DelayedDestroy(stimL, 1); }
-            //    if (stimR != null) { vsmanager.DelayedDestroy(stimR, 1); }
-            //    fi++;
-            //}
-
-            //// Check if lick time was passed
-            //if (taskTime >= (double)sessionData[cEID]["lick.times"].GetValue(li))
-            //{
-            //    lickBehavior.Lick();
-
-            //    li++;
-            //}
+            spikesThisFrame += PlaySpikes(probe);
         }
+
+        // TODO: setting a max of 100 is bad for areas that have high spike rates
+        // also this creates sound issues if your framerate is low
+        if (UnityEngine.Random.value < (spikesThisFrame / 100))
+        {
+            Debug.LogWarning("Spiking but emanager has no queue for spikes anymore");
+            //emanager.QueueSpike();
+        }
+
+        // Increment the wheel index if time has passed the previous value
+        while (taskTime >= wheelTime.y)
+        {
+            wi++;
+            wheelTime = new Vector2((float)(double)replaySessionData.GetData("wheel.timestamps").GetValue(wi), (float)(double)replaySessionData.GetData("wheel.timestamps").GetValue(wi+1));
+            wheelPos = new Vector2((float)(double)replaySessionData.GetData("wheel.position").GetValue(wi), (float)(double)replaySessionData.GetData("wheel.position").GetValue(wi+1));
+            float dwheel = (wheelPos.y - wheelPos.x) * -rad2mm2deg;
+            stimPosDeg += new Vector2(dwheel, dwheel);
+
+            // Move stimuli
+            // Freeze stimuli if they go past zero, or off the screen
+            if (stimL != null && !stimFrozen)
+            {
+                vsmanager.SetStimPositionDegrees(stimL, new Vector2(stimPosDeg.x, 0));
+                if (stimPosDeg.x > stimAzMinMax.x || stimPosDeg.x < -stimAzMinMax.y) { stimFrozen = true; }
+            }
+            if (stimR != null && !stimFrozen)
+            {
+                vsmanager.SetStimPositionDegrees(stimR, new Vector2(stimPosDeg.y, 0));
+                if (stimPosDeg.y < stimAzMinMax.x || stimPosDeg.y > stimAzMinMax.y) { stimFrozen = true; }
+            }
+        }
+        float partialTime = (taskTime - wheelTime.x) / (wheelTime.y - wheelTime.x);
+        // note the negative, because for some reason the rotations are counter-clockwise
+        wheelTransform.localRotation = Quaternion.Euler(-rad2deg * Mathf.Lerp(wheelPos.x, wheelPos.y, partialTime), 0, 0);
+
+        // Check if go cue time was passed
+        if (taskTime >= (double)replaySessionData.GetData("goCue_times").GetValue(gi))
+        {
+            audmanager.PlayGoTone();
+            // Stimulus shown
+
+            // Check left or right contrast
+            float conL = (float)(double)replaySessionData.GetData("contrastLeft").GetValue(gi);
+            float conR = (float)(double)replaySessionData.GetData("contrastRight").GetValue(gi);
+            stimPosDeg = new Vector2(-1 * stimAz, stimAz);
+
+            stimFrozen = false;
+            // We'll do generic stimulus checks, even though the task is detection so that
+            // if later someone does 2-AFC we are ready
+            if (conL > 0)
+            {
+                Debug.Log("Adding left stimulus");
+                stimL = vsmanager.AddNewStimulus("gabor");
+                stimL.GetComponent<VisualStimulus>().SetScale(5);
+                // Set the position properly
+                vsmanager.SetStimPositionDegrees(stimL, new Vector2(stimPosDeg.x, 0));
+                vsmanager.SetContrast(stimL, conL);
+            }
+
+            if (conR > 0)
+            {
+                Debug.Log("Adding right stimulus");
+                stimR = vsmanager.AddNewStimulus("gabor");
+                stimR.GetComponent<VisualStimulus>().SetScale(5);
+                // Set the position properly
+                vsmanager.SetStimPositionDegrees(stimR, new Vector2(stimPosDeg.y, 0));
+                vsmanager.SetContrast(stimR, conR);
+            }
+            gi++;
+        }
+
+        // Check if feedback time was passed
+        if (taskTime >= (double)replaySessionData.GetData("feedback_times").GetValue(fi))
+        {
+            // Check type of feedback
+            if ((long)replaySessionData.GetData("feedbackType").GetValue(fi) == 1)
+            {
+                // Reward + lick
+                lickBehavior.Drop();
+            }
+            else
+            {
+                // Play white noise
+                audmanager.PlayWhiteNoise();
+            }
+            stimFrozen = true;
+
+            if (stimL != null) { vsmanager.DelayedDestroy(stimL, 1); }
+            if (stimR != null) { vsmanager.DelayedDestroy(stimR, 1); }
+            fi++;
+        }
+
+        //Check if lick time was passed
+        if (taskTime >= (double)replaySessionData.GetData("licks.times").GetValue(li))
+        {
+            lickBehavior.Lick();
+
+            li++;
+        }
+
+
+        // Handle paw positions
+        pawIdx = (int) ((taskTime - replaySessionData.GetVideoStartTime("left")) * pawFPS);
+        pawL.localPosition = replayManager.ConvertPawToWorld(replaySessionData.GetPaw(pawIdx, true));
+        pawR.localPosition = replayManager.ConvertPawToWorld(replaySessionData.GetPaw(pawIdx, false));
+
+        UpdateRawData();
     }
 
     private int PlaySpikes(int probe)
@@ -359,13 +376,13 @@ public class IR_IBLReplayTask : Experiment
             Debug.LogError("Probe *should* not exist!! Got " + probe + " expected value 0/1");
         }
 
-        while (taskTime >= (double)replaySessionData.GetData(ststr).GetValue(si[probe]))
+        while (taskTime >= (double)replaySessionData.GetData(ststr).GetValue(spikeIdx[probe]))
         {
-            int clu = (int)(uint)replaySessionData.GetData(scstr).GetValue(si[probe]);
+            int clu = (int)(uint)replaySessionData.GetData(scstr).GetValue(spikeIdx[probe]);
 
-            nemanager.SetComponentData(neuronEntities[probe][clu], spikedComponent);
+            nemanager.SetNeuronSpiking(neuronEntities[probe][clu], spikedComponent, scaledComponent);
             spikesThisFrame++;
-            si[probe]++;
+            spikeIdx[probe]++;
         }
 
         return spikesThisFrame;
@@ -387,5 +404,10 @@ public class IR_IBLReplayTask : Experiment
     public override void SetTaskTime(float newTime)
     {
         throw new NotImplementedException();
+    }
+
+    private void UpdateRawData()
+    {
+        
     }
 }

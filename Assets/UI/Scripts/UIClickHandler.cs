@@ -176,10 +176,8 @@ public class UIClickHandler : MonoBehaviour
             draggingPanel = targetPanel;
             dragPanelSize = draggingPanel.GetComponent<RectTransform>().rect.size;
             dragPanelOffset = targetPanel.transform.localPosition - ScaledMousePosition();
-            Debug.Log(dragPanelOffset);
             // Pre-compute the edges
             panelBoundaries = new Vector4(-canvasSize.x / 2 + panelEdgeOffset, canvasSize.x / 2 - panelEdgeOffset, -canvasSize.y/2 + panelEdgeOffset, canvasSize.y/2 - panelEdgeOffset);
-            Debug.Log(panelBoundaries);
 
             // Also bring the panel to the front
             draggingPanel.transform.SetAsLastSibling();

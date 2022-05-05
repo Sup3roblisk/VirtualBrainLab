@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,12 +12,18 @@ public class IR_IBLReplayManager : MonoBehaviour
     [SerializeField] CCFModelControl modelControl;
     [SerializeField] Utils util;
 
-    // Gameobjects
-    [SerializeField] Transform wheelTransform;
+    // Managers
     [SerializeField] AudioManager audmanager;
     [SerializeField] LickBehavior lickBehavior;
     [SerializeField] VisualStimulusManager vsmanager;
     [SerializeField] NeuronEntityManager nemanager;
+
+    // Gameobjects
+    [SerializeField] Transform wheelTransform;
+    [SerializeField] Transform pawLTransform;
+    [SerializeField] Transform pawRTransform;
+    [SerializeField] Transform pawCenterTargetTransform;
+    [SerializeField] float pawScale = 5f;
 
     [SerializeField] GameObject loadingGO;
 
@@ -66,6 +73,24 @@ public class IR_IBLReplayManager : MonoBehaviour
         activeTask = new IR_IBLReplayTask(util, wheelTransform, audmanager, lickBehavior, vsmanager, nemanager, tips);
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        modelControl.LateStart(true);
+        SetupCCFModels();
+    }
+
+    private void Update()
+    {
+        if (activeTask.TaskLoaded() && activeTask.TaskRunning())
+            activeTask.TaskUpdate();
+    }
+
+    public (Transform, Transform) GetPawTransforms()
+    {
+        return (pawLTransform, pawRTransform);
+    }
+
     public void SetLoading(bool state)
     {
         loadingGO.SetActive(state);
@@ -74,6 +99,13 @@ public class IR_IBLReplayManager : MonoBehaviour
     public string GetAssetPrefix()
     {
         return assetPrefix;
+    }
+
+    public Vector3 ConvertPawToWorld(Vector3 relativePawPosition)
+    {
+        //return pawCenterTargetTransform.position + relativePawPosition * pawScale;
+
+        return relativePawPosition * pawScale;
     }
 
     public async void LoadSessionInfo()
@@ -89,20 +121,6 @@ public class IR_IBLReplayManager : MonoBehaviour
         sessionDropdown.AddOptions(new List<string>(sessions));
     }
 
-    public void ChangeSession(int newSessionID)
-    {
-        string eid = sessions[newSessionID - 1];
-        Debug.Log("(RManager) Changing session to: " + eid);
-        LoadSession(eid);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        modelControl.LateStart(true);
-        SetupCCFModels();
-    }
-
     public async void SetupCCFModels()
     {
         await modelControl.GetDefaultLoaded();
@@ -112,6 +130,13 @@ public class IR_IBLReplayManager : MonoBehaviour
             node.GetNodeTransform().localRotation = Quaternion.identity;
             node.SetNodeModelVisibility(true);
         }
+    }
+
+    public void ChangeSession(int newSessionID)
+    {
+        string eid = sessions[newSessionID - 1];
+        Debug.Log("(RManager) Changing session to: " + eid);
+        LoadSession(eid);
     }
 
     public async void LoadSession(string eid)
@@ -132,21 +157,38 @@ public class IR_IBLReplayManager : MonoBehaviour
 
             activeSession = session;
             activeTask.SetSession(activeSession);
+            activeTask.SetTaskLoaded(true);
         }
     }
 
     public void SetVideoData(VideoClip left, VideoClip body, VideoClip right)
     {
         leftPlayer.clip = left;
+        leftPlayer.Prepare();
         bodyPlayer.clip = body;
+        bodyPlayer.Prepare();
         rightPlayer.clip = right;
+        rightPlayer.Prepare();
+    }
+
+    public void SetVideoFrame(int frame)
+    {
+        if (frame > 0)
+        {
+            leftPlayer.frame = frame;
+            leftPlayer.Play();
+            bodyPlayer.frame = frame;
+            bodyPlayer.Play();
+            rightPlayer.frame = frame;
+            rightPlayer.Play();
+        }
     }
 
     public void UpdateVideoSpeed()
     {
-        leftPlayer.playbackSpeed = Time.timeScale;
-        bodyPlayer.playbackSpeed = Time.timeScale;
-        rightPlayer.playbackSpeed = Time.timeScale;
+        //leftPlayer.playbackSpeed = Time.timeScale;
+        //bodyPlayer.playbackSpeed = Time.timeScale;
+        //rightPlayer.playbackSpeed = Time.timeScale;
     }
 
     public void JumpTime(float jumpTimePerc)
@@ -156,28 +198,40 @@ public class IR_IBLReplayManager : MonoBehaviour
 
     public void PlayTask()
     {
+        Debug.Log("Pressed play");
         activeTask.RunTask();
     }
 
     public void PauseTask()
     {
+        Debug.Log("Pressed pause");
         activeTask.PauseTask();
     }
 
     public void StopTask()
     {
+        Debug.Log("Pressed stop");
         activeTask.StopTask();
     }
 
     public void SpeedupTask()
     {
+        Debug.Log("Pressed ff");
         Time.timeScale = Time.timeScale * 2f;
         UpdateVideoSpeed();
+        UpdateReplaySpeedText();
     }
 
     public void SlowdownTask()
     {
+        Debug.Log("Pressed slow");
         Time.timeScale = Time.timeScale / 2f;
         UpdateVideoSpeed();
+        UpdateReplaySpeedText();
+    }
+
+    private void UpdateReplaySpeedText()
+    {
+        GameObject.Find("Replay_Speed").GetComponent<TMP_Text>().text = Time.timeScale + "x";
     }
 }
