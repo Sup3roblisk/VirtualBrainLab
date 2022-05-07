@@ -116,7 +116,6 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
                     //Debug.Log((int)Math.Round(pos.x * 1000, 0));
                     //Debug.Log(pos);
                     // May have to convert from mlapdv -> apdvml, but let's test first
-                    Debug.Log(elecmanager);
                     int posId = annotationDataset.ValueAtIndex((int)Math.Round(pos.y * 1000 / 25, 0),
                                                           (int)Math.Round(pos.z * 1000 / 25, 0),
                                                           (int)Math.Round(pos.x * 1000 / 25, 0));

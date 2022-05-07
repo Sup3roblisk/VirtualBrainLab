@@ -11,6 +11,7 @@ public class UIClickHandler : MonoBehaviour
     public Camera uiCamera;
     public RectTransform brainImageRectTransform;
     public PlayerManager pmanager;
+    public bool rotateBrainCamera;
 
     // Canvas
     private Canvas canvas;
@@ -128,6 +129,13 @@ public class UIClickHandler : MonoBehaviour
             controlMainCamera = !controlMainCamera;
             cameraControlUIPanel.SetActive(controlMainCamera);
         }
+        if (rotateBrainCamera)
+        {
+            totalPitch = (totalPitch - 0.5f) % 360;
+            totalYaw = (totalYaw + 0.25f) % 360;
+            ApplyBrainCameraRotatorRotation();
+        }
+        
     }
 
     GameObject GetUIRaycastTarget(PointerEventData pointerData)
@@ -298,8 +306,9 @@ public class UIClickHandler : MonoBehaviour
         // If the mouse is down, even if we are far way now we should drag the brain
         if (mouseDownOverBrain && mouseButtonDown==0)
         {
-            float xRot = -Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
-            float yRot = Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
+            // Rotation speed depending on deltaTime means it's also affected by the replay speed
+            float xRot = -Input.GetAxis("Mouse X") * rotSpeed; //* Time.deltaTime;
+            float yRot = Input.GetAxis("Mouse Y") * rotSpeed; //* Time.deltaTime;
 
             if (xRot != 0 || yRot != 0)
             {
