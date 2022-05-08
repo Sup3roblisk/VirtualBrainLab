@@ -101,8 +101,8 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
                 break;
 
             case "grayscaleFR":
-                float4[] zeroColors = (float4[]) Enumerable.Repeat(new float4(0f, 0f, 0f, 0f), n);
-                float4[] maxColors = (float4[]) Enumerable.Repeat(new float4(1f, 1f, 1f, 1f), n);
+                float4[] zeroColors = (float4[]) Enumerable.Repeat(new float4(0f, 0f, 0f, 0f), n).ToArray();
+                float4[] maxColors = (float4[]) Enumerable.Repeat(new float4(1f, 1f, 1f, 1f), n).ToArray();
                 nemanager.AddNeurons(iblPos, eventAverageComponents, zeroColors, maxColors);
                 break;
 

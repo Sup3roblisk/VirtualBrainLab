@@ -24,7 +24,7 @@ public class UpdateTrialPosPanel : MonoBehaviour
     {
         int curIndex = iblTask.GetTimeIndex();
         float curX = trialPosPanelWidth * (curIndex / 250.0f);
-        Debug.Log(curIndex + " " + curX);
+        //Debug.Log(curIndex + " " + curX);
         trialPosLineTransform.anchoredPosition = new Vector2(curX, trialPosLineTransform.anchoredPosition.y);
     }
 }
