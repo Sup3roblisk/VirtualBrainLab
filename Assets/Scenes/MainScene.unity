@@ -10106,8 +10106,8 @@ MonoBehaviour:
   rightPawIK: {fileID: 1552946862}
   leftPawDefault: {fileID: 1592734806}
   rightPawDefault: {fileID: 1552946861}
-  moveDurationFast: 0.025
-  moveDurationSlow: 0.05
+  moveDurationFast: 0.02
+  moveDurationSlow: 0.055
   degreesPerStep: 20
   visualDegreesRatio: 0.25
 --- !u!4 &713980111

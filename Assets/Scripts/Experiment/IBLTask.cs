@@ -51,6 +51,7 @@ public class IBLTask : Experiment
     private float _prevWheelAngle;
     private float _wheelDelta;
     private float _wheelVelocity;
+    private float _firstWheelMoveTime;
 
     private float _stimOnWindow = 1f; // 150 ms effect
     private float _stimOnTime;
@@ -159,6 +160,7 @@ public class IBLTask : Experiment
                             t_wheelDuration = wheelRotationBehavior.RotateWheelSteps(-1 * t_respSide * 10, t_stimulus);
 
                             NextState();
+                            _firstWheelMoveTime = Time.realtimeSinceStartup;
                         }
                         break;
                     case 2:
@@ -175,7 +177,7 @@ public class IBLTask : Experiment
                         //Debug.Log(Time.timeScale + ", " + Time.realtimeSinceStartup + ", " + (_stimOnTime + t_reactionTime) + ", " +
                         //          t_reactionTime + ", " + (Time.realtimeSinceStartup - (_stimOnTime + t_reactionTime)) / t_wheelDuration);
                         trialTimeIndex = Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx,
-                                         Time.timeScale * (Time.realtimeSinceStartup - (_stimOnTime + t_reactionTime)) / t_wheelDuration));
+                                         Time.timeScale * (Time.realtimeSinceStartup - _firstWheelMoveTime) / t_wheelDuration));
 
                         // Old code to lerp trialTimeIndex based on wheel angle:
                         // lerp and round to get the index
