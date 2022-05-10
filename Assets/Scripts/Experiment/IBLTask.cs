@@ -168,14 +168,22 @@ public class IBLTask : Experiment
                         float wheelAngle = wheelRotationBehavior.CurrentWheelAngle();
                         _wheelDelta = Mathf.DeltaAngle(wheelAngle,_prevWheelAngle);
                         _prevWheelAngle = wheelRotationBehavior.CurrentWheelAngle();
+                
+                        
+                        // Total time from stim on to feedback is t_reactionTime + t_wheelDuration
+                        // Lerp from 0 to deltaTime * (cur time - (_stimOnTime + t_reactionTime)) / (t_wheelDuration)
+                        //Debug.Log(Time.timeScale + ", " + Time.realtimeSinceStartup + ", " + (_stimOnTime + t_reactionTime) + ", " +
+                        //          t_reactionTime + ", " + (Time.realtimeSinceStartup - (_stimOnTime + t_reactionTime)) / t_wheelDuration);
+                        trialTimeIndex = Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx,
+                                         Time.timeScale * (Time.realtimeSinceStartup - (_stimOnTime + t_reactionTime)) / t_wheelDuration));
 
-
+                        // Old code to lerp trialTimeIndex based on wheel angle:
                         // lerp and round to get the index
                         // note that we add the perecentage of wheel turning.
                         // If the mouse turns the wheel the wrong way during a correct trial or vice versa,
                         // use the last trial time index instead of decrementing
-                        trialTimeIndex = Mathf.Max(trialTimeIndex, Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx,
-                                                                   Mathf.Abs(Mathf.DeltaAngle(_initWheelAngle, wheelAngle)) / 80)));
+                        //trialTimeIndex = Mathf.Max(trialTimeIndex, Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx,
+                        //                                           Mathf.Abs(Mathf.DeltaAngle(_initWheelAngle, wheelAngle)) / 80)));
 
                         if (StateWheel())
                         {

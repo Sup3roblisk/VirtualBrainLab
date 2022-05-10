@@ -47,6 +47,7 @@ public class UIClickHandler : MonoBehaviour
     public float maxZRotation = 90;
     public float rotSpeed = 1000.0f;
     private float totalPitch;
+    private float totalRoll;
     private float totalYaw;
     private Vector3 initialCameraRotatorPosition;
 
@@ -75,6 +76,7 @@ public class UIClickHandler : MonoBehaviour
         canvasSize = canvas.GetComponent<RectTransform>().rect.size;
 
         totalPitch = 0;
+        totalRoll = 0;
         totalYaw = 0;
 
         mouseDownOverBrain = false;
@@ -132,7 +134,8 @@ public class UIClickHandler : MonoBehaviour
         if (rotateBrainCamera)
         {
             //totalPitch = (totalPitch - 0.5f) % 360; // Rotate around x-axis
-            totalYaw = (totalYaw + 0.5f) % 360; // Rotate around y-axis
+            //totalYaw = (totalYaw + 0.5f) % 360; // Rotate around z-axis
+            totalRoll = (totalRoll + 0.5f) % 360; // Rotate around y-axis
             ApplyBrainCameraRotatorRotation();
         }
         
@@ -267,6 +270,7 @@ public class UIClickHandler : MonoBehaviour
                 {
                     totalYaw = 0f;
                     totalPitch = 0f;
+                    totalRoll = 0f;
                     ApplyBrainCameraRotatorRotation();
                 }
             }
@@ -325,7 +329,7 @@ public class UIClickHandler : MonoBehaviour
 
     void ApplyBrainCameraRotatorRotation()
     {
-        Quaternion curRotation = Quaternion.Euler(totalYaw, 0, totalPitch);
+        Quaternion curRotation = Quaternion.Euler(totalYaw, totalRoll, totalPitch);
 
         // Move the camera back to zero, perform rotation, then offset back
         brainCameraRotator.transform.position = initialCameraRotatorPosition;

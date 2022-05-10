@@ -70,7 +70,7 @@ public partial class IBLEventAverageSystem : SystemBase
                                          Mathf.Lerp(zeroFRColor.y, maxFRColor.y, curPercent),
                                          Mathf.Lerp(zeroFRColor.z, maxFRColor.z, curPercent),
                                          Mathf.Lerp(zeroFRColor.w, maxFRColor.w, curPercent));
-                scale.Value = 0.01f + curPercent * 0.08f;
+                scale.Value = 0.01f + curPercent * 0.0625f;
             }).ScheduleParallel(); // .Run();
     }
 }

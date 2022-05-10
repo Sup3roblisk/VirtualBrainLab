@@ -14423,7 +14423,7 @@ MonoBehaviour:
   nemanager: {fileID: 1036566700}
   vdmanager: {fileID: 1036566698}
   util: {fileID: 1036566697}
-  displayMode: grayscaleFR
+  displayMode: byRegionFR
 --- !u!114 &1036566700
 MonoBehaviour:
   m_ObjectHideFlags: 0
