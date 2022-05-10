@@ -53,8 +53,8 @@ public partial class IBLEventAverageSystem : SystemBase
                 if (randComp.rand.NextFloat(1f) < neuronFiringRate)
                 {
                     spikeComp.spiking = 1f;
-                    color.Value = new float4(1f, 1f, 1f, 1f);
-                    scale.Value = 0.09f;
+                    color.Value = new float4(1f, 1f, 1f, 0.65f);
+                    scale.Value = 0.12f;
                 }
 
             }).ScheduleParallel(); // .Run();

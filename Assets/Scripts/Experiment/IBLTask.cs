@@ -23,8 +23,8 @@ public class IBLTask : Experiment
     //private float onsetToneDur = 0.1f;
     private float quiMin = 0.2f;
     private float quiMax = 0.5f;
-    private float ITIcorr = 0.2f;
-    private float ITIerror = 2.0f;
+    private float ITIcorr = 0.6f;
+    private float ITIerror = 0.6f;
     private float[] percCorrLevels = { 0.5f, 0.75f, 0.9f }; // 
     private float[] rtLevels = { 5f, 0.5f, 0.25f }; // maximum reaction time
     private float[] stimPositionTriggers = { 0, 45 };
@@ -169,9 +169,13 @@ public class IBLTask : Experiment
                         _wheelDelta = Mathf.DeltaAngle(wheelAngle,_prevWheelAngle);
                         _prevWheelAngle = wheelRotationBehavior.CurrentWheelAngle();
 
+
                         // lerp and round to get the index
-                        // note that we add the perecentage of wheel turning 
-                        trialTimeIndex = Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx, Mathf.Abs(Mathf.DeltaAngle(_initWheelAngle, wheelAngle)) / 80));
+                        // note that we add the perecentage of wheel turning.
+                        // If the mouse turns the wheel the wrong way during a correct trial or vice versa,
+                        // use the last trial time index instead of decrementing
+                        trialTimeIndex = Mathf.Max(trialTimeIndex, Mathf.RoundToInt(Mathf.Lerp(firstWheelIdx, feedbackIdx,
+                                                                   Mathf.Abs(Mathf.DeltaAngle(_initWheelAngle, wheelAngle)) / 80)));
 
                         if (StateWheel())
                         {

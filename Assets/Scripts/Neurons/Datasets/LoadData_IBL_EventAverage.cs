@@ -117,8 +117,8 @@ public class LoadData_IBL_EventAverage : MonoBehaviour
                     //Debug.Log(pos);
                     // May have to convert from mlapdv -> apdvml, but let's test first
                     int posId = annotationDataset.ValueAtIndex((int)Math.Round(pos.y * 1000 / 25, 0),
-                                                          (int)Math.Round(pos.z * 1000 / 25, 0),
-                                                          (int)Math.Round(pos.x * 1000 / 25, 0));
+                                                               (int)Math.Round(pos.z * 1000 / 25, 0),
+                                                               (int)Math.Round(pos.x * 1000 / 25, 0));
                     Color posColor = ccfmodelcontrol.GetCCFAreaColor(posId);
                     zeroRegionColors[i] = new float4(posColor.r, posColor.b, posColor.g, 0f);
                     maxRegionColors[i] = new float4(posColor.r, posColor.b, posColor.g, 1f);

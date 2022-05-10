@@ -28,7 +28,7 @@ public class NeuronEntityManager : MonoBehaviour
     [SerializeField] private Mesh neuronMesh;
     [SerializeField] private Material neuronMaterial;
     [SerializeField] private float replayScale = 0.125f;
-    [SerializeField] private float neuronScale = 0.075f;
+    [SerializeField] private float neuronScale = 0.015f;
     [SerializeField] private Utils util;
 
     // Local tracking

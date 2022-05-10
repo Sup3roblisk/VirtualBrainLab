@@ -29,11 +29,11 @@ public class WheelRotationBehavior : MonoBehaviour
 
     //int degreesLeft = 0;
 
-    float moveDurationFast = 0.025f;
-    float moveDurationSlow = 0.05f;
+    public float moveDurationFast = 0.025f;
+    public float moveDurationSlow = 0.05f;
 
-    int degreesPerStep = 20;
-    float visualDegreesRatio = 0.25f;
+    public int degreesPerStep = 20;
+    public float visualDegreesRatio = 0.25f; // Formerly 0.25f
 
     private void Awake()
     {

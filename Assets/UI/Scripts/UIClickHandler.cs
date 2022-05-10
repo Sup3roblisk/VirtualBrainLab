@@ -131,8 +131,8 @@ public class UIClickHandler : MonoBehaviour
         }
         if (rotateBrainCamera)
         {
-            totalPitch = (totalPitch - 0.5f) % 360;
-            //totalYaw = (totalYaw + 0.25f) % 360;
+            //totalPitch = (totalPitch - 0.5f) % 360; // Rotate around x-axis
+            totalYaw = (totalYaw + 0.5f) % 360; // Rotate around y-axis
             ApplyBrainCameraRotatorRotation();
         }
         

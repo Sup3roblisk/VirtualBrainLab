@@ -15,7 +15,8 @@ public partial class NeuronSpikingSystem : SystemBase
     protected override void OnUpdate()
     {
         float smallScale = nemanager.GetNeuronScale();
-        float spikeTimeChange = Time.DeltaTime * nemanager.GetMaxFiringRate();
+        // Temporarily slow down spike time change so spikes don't just appear/disapear instantly in videos (kai)
+        float spikeTimeChange = Time.DeltaTime * nemanager.GetMaxFiringRate() / 4;
 
         Entities
             .ForEach((ref Scale scale, ref MaterialColor color, ref SpikingComponent spikeComp, in SpikingColorComponent spikeColorComp) =>
@@ -33,7 +34,7 @@ public partial class NeuronSpikingSystem : SystemBase
                     {
                         // reduce the scale
                         if (scale.Value > smallScale)
-                            scale.Value *= 0.9f;
+                            scale.Value *= 0.65f;
                         else
                             scale.Value = smallScale;
                     }
