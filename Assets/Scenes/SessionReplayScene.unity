@@ -4059,7 +4059,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 289999557}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.71514255, y: -0.29703873, z: 0.11229308, w: 0.62267923}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5363,8 +5363,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 393909419}
-  m_LocalRotation: {x: 0.95447487, y: 0, z: 0.29829133, w: 0}
-  m_LocalPosition: {x: -101.6, y: 9.4, z: 145.6}
+  m_LocalRotation: {x: 0.93767345, y: -0, z: -0.3475176, w: 0}
+  m_LocalPosition: {x: 67.80002, y: -0.6, z: 89.90002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1726848879}
@@ -11054,7 +11054,7 @@ MonoBehaviour:
   pawLTransform: {fileID: 1726848879}
   pawRTransform: {fileID: 289999558}
   pawCenterTargetTransform: {fileID: 393909420}
-  pawScale: 1
+  pawScale: 50
   loadingGO: {fileID: 867301824}
   iblReplayProbesGO: {fileID: 851412130}
   sessionDropdown: {fileID: 1626126477}
@@ -14906,7 +14906,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1726848878}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.6408142, y: 0.2844993, z: -0.2793817, w: -0.6560208}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
