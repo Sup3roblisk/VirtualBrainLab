@@ -1670,6 +1670,7 @@ MonoBehaviour:
   uiCamera: {fileID: 38478433}
   brainImageRectTransform: {fileID: 1267355937}
   pmanager: {fileID: 2109663387496678656}
+  rotateBrainCamera: 0
   dragSpeed: 500
   brainCamera: {fileID: 963194227}
   brainCameraRotator: {fileID: 177044097}
@@ -7815,6 +7816,10 @@ MonoBehaviour:
   rightPawIK: {fileID: 1552946862}
   leftPawDefault: {fileID: 1592734806}
   rightPawDefault: {fileID: 1552946861}
+  moveDurationFast: 0.025
+  moveDurationSlow: 0.05
+  degreesPerStep: 20
+  visualDegreesRatio: 0.25
 --- !u!4 &713980111
 Transform:
   m_ObjectHideFlags: 0
@@ -10790,12 +10795,6 @@ MonoBehaviour:
   brainRegionMaterialNames:
   - default
   modelScale: 0.001
-  addressableAssetPath: Assets/AddressableAssets/AllenCCF/
-  ontologyStructureAsset:
-    m_AssetGUID: 523f4b2aa92687c4ca463a70e7e8fdd2
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
 --- !u!222 &1036566687
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18626,6 +18625,7 @@ MonoBehaviour:
   util: {fileID: 1036566697}
   nemanager: {fileID: 1036566700}
   modelControl: {fileID: 1036566686}
+  vdmanager: {fileID: 0}
   networkOverride: 0
 --- !u!114 &2109663387496678655
 MonoBehaviour:
